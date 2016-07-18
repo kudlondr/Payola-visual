@@ -1,0 +1,51 @@
+@(user: Option[cz.payola.domain.entities.User], owner: cz.payola.domain.entities.User,
+analyses: Seq[cz.payola.domain.entities.Analysis], dataSources: Seq[cz.payola.domain.entities.plugins.DataSource]
+)
+@import tags._
+
+@main(user, "User profile :: Payola!") {
+<div class="container">
+
+    @if(user.isDefined && (user.get.id == owner.id)){
+    <div class="row profile-edit-div">
+        <a href="@routes.Profile.edit()" class="btn btn-primary input pull-right"><i class="glyphicon glyphicon-pencil"></i> Edit profile</a>
+    </div>
+    }
+
+    <div class="hero-unit">
+        <div class="row">
+            <span class="col-lg-3">
+                <img src="http://www.gravatar.com/avatar/@md5(owner.email)?s=200" />
+            </span>
+            <h1>@owner.name</h1>
+            <p><i class="glyphicon-envelope"></i>@owner.email</p>
+        </div>
+    </div>
+
+    @if(!user.isDefined || (user.isDefined && (user.get.id != owner.id))){
+
+        <div class="row">
+
+            @tags.dashboardList("Analyses shared to you by the user", "analyses", analyses, None,
+            { e: cz.payola.domain.Entity =>
+            val a = e.asInstanceOf[cz.payola.domain.entities.Analysis]
+            <td>
+                <a href={routes.Analysis.detail(a.id).toString}>{a.name}</a>
+            </td>
+            <td></td>
+            }, "alert alert-info", routes.Analysis.listAccessibleByOwner(owner.id, 1))
+
+
+            @tags.dashboardList("Data sources shared to you by the user", "data sources", dataSources, None,
+            { e: cz.payola.domain.Entity =>
+            val d = e.asInstanceOf[cz.payola.domain.entities.plugins.DataSource]
+            <td>
+                <a href={routes.DataSource.detail(d.id, None).toString}>{d.name}</a>
+            </td>
+            <td></td>
+            }, "alert alert-info", routes.DataSource.listAccessibleByOwner(owner.id,1))
+
+        </div>
+    }
+</div>
+}

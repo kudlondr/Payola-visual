@@ -1,0 +1,101 @@
+@(user: Option[cz.payola.domain.entities.User], accessibleAnalysis: Seq[cz.payola.domain.entities.Analysis],
+accessibleDataSources: Seq[cz.payola.domain.entities.plugins.DataSource]
+)
+
+@main(user, "Dashboard :: Payola!") {
+<div class="container-fluid dashboard">
+
+    <h3>Featured visualizations</h3>
+    <div class="row">
+        <div class="col-lg-4">
+            <a href="http://vis.payola.cz/ovm-gmaps" class="thumbnail" style="min-height: 300px;">
+                <img src="@routes.Assets.at("img/ovm-gmaps.png")" alt="">
+                <p style="text-align: center"><small>OVM coordinates using Google Geocoder + Type as skos:Concept + uradovny + optional region [GMaps]</small></p>
+            </a>
+        </div>
+        <div class="col-lg-4">
+            <a href="http://vis.payola.cz/coi-treemap" class="thumbnail" style="min-height: 300px;">
+                <img src="@routes.Assets.at("img/coi-treemap.png")" alt="">
+                <p style="text-align: center"><small>COI.CZ inspections and sanctions by regions and sanction value [Treemap]</small></p>
+            </a>
+        </div>
+        <div class="col-lg-4">
+            <a href="http://live.payola.cz/analysis/7b2ee8cc-f03a-4a04-ba9d-e54e65346191#cz_payola_web_client_views_d3_packLayout_PackLayout" class="thumbnail" style="min-height: 300px;">
+                <img src="@routes.Assets.at("img/coi-packed.png")" alt="">
+                <p style="text-align: center"><small>COI.CZ inspections and sanctions by regions and sanction value [PackLayout]</small></p>
+            </a>
+        </div>
+    </div>
+
+    <h3>Dashboard</h3>
+
+    <div class="row">
+        @tags.dashboardList("Accessible analyses", "analyses", accessibleAnalysis,None,
+        { e: cz.payola.domain.Entity =>
+        val a = e.asInstanceOf[cz.payola.domain.entities.Analysis]
+        <td>
+            <a href={routes.Analysis.detail(a.id).toString}>{a.name}</a>
+        </td>
+        <td>
+            {if(a.owner.isDefined){
+            <a href={routes.Profile.index(a.owner.get.email).toString}><i class="glyphicon glyphicon-user"></i> {a.owner.get.name}</a>
+            }else{
+            <span class="badge badge-warning">Public</span>
+            }}
+        </td>
+        }, "panel-info", routes.Analysis.listAccessible(1))
+
+
+        @tags.dashboardList("Accessible data sources", "data sources", accessibleDataSources,None,
+        { e: cz.payola.domain.Entity =>
+        val d = e.asInstanceOf[cz.payola.domain.entities.plugins.DataSource]
+        <td>
+            <a href={routes.DataSource.detail(d.id, None).toString}>{d.name}</a>
+        </td>
+        <td>
+            {if(d.owner.isDefined){
+            <a href={routes.Profile.index(d.owner.get.email).toString}><i class="glyphicon glyphicon-user"></i> {d.owner.get.name}</a>
+            }else{
+            <span class="badge badge-warning">Public</span>
+            }}
+        </td>
+        }, "panel-success", routes.DataSource.listAccessible(1))
+    </div>
+
+    @if(user.isDefined){
+    <div class="row">
+        @tags.dashboardList("My analyses", "analyses", user.get.ownedAnalyses,Some(routes.Analysis.create),
+        { e: cz.payola.domain.Entity =>
+        val a = e.asInstanceOf[cz.payola.domain.entities.Analysis]
+        <td>
+            <a href={routes.Analysis.detail(a.id).toString}>{a.name}</a>
+        </td>
+        <td><a href={routes.Analysis.edit(a.id).toString} class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i> Edit</a></td>
+        }, "panel-default", routes.Analysis.list(1))
+
+        @tags.dashboardList("My data sources", "data sources", user.get.ownedDataSources,Some(routes.DataSource.create),
+        { e: cz.payola.domain.Entity =>
+        val d = e.asInstanceOf[cz.payola.domain.entities.plugins.DataSource]
+        <td>
+            <a href={routes.DataSource.detail(d.id, None).toString}>{d.name}</a>
+        </td>
+        <td>
+            {if(d.isEditable){
+            <a href={routes.DataSource.edit(d.id).toString} class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+            }else{
+            <span class="badge badge-inverse">Not editable</span>
+            }}
+        </td>
+        }, "panel-default", routes.DataSource.list(1))
+
+    </div>
+    <!--/row-->
+    }else{
+    <div class="well hero-unit">
+        <h2>There's more!</h2>
+
+        <p><a href="@routes.Application.login" class="btn btn-primary">Sign in</a> to see your top content here!</p>
+    </div>
+    }
+</div><!-- /.container-fluid -->
+}

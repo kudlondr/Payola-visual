@@ -1,0 +1,41 @@
+@(user: cz.payola.domain.entities.User, group: cz.payola.domain.entities.Group, users: Seq[cz.payola.domain.entities.User])
+
+@main(Some(user), "Edit group "+ group.name + " :: Payola!") {
+<div class="container">
+
+    <div class="row">
+        <h1 class="col-lg-7">Edit group @group.name</h1><span class="col-lg-5" style="text-align: right;"><a href="@routes.Group.delete(group.id)" onclick="return confirm('Are you sure?');" class="btn btn-danger"><i class="glyphicon-remove-circle glyphicon"></i> Delete '@group.name'</a></span>
+    </div>
+
+    <form action="@routes.Group.save(group.id)" method="post">
+        <div class="well">
+            <fieldset>
+                <legend>Change group properties</legend>
+                <div class="control-group">
+                    <label class="control-label" for="name">Name</label>
+                    <span class="controls">
+                        <input type="text" name="name" placeholder="Group name" id="name" value="@group.name" class="input col-lg-3">
+                    </span>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="members">Members</label>
+                    <span class="controls">
+                        <input name="members" id="members" value="@(group.members.map{ m => m.id+":"+m.name }.mkString(","))" class="chosen" />
+                    </span>
+                </div>
+                <div class="control-group">
+                    <span class="controls">
+                        <button type="submit" id="savebutton" class="btn btn-primary">Save Group</button>
+                    </span>
+                </div>
+            </fieldset>
+        </div>
+    </form>
+    <script src="/javaScriptPackage/cz.payola.web.client.presenters.entity.GroupEdit" type="text/javascript"></script>
+    <script type="text/javascript">
+        new cz.payola.web.client.presenters.entity.GroupEdit("@group.id").initialize();
+    </script>
+
+</div>
+
+}

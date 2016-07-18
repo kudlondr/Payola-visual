@@ -1,0 +1,15 @@
+@(user: cz.payola.domain.entities.User, id: String)
+
+@main(Some(user), "Edit analysis :: Payola!") {
+
+<div class="container-fluid">
+    <div class="row" id="client-canvas">
+
+    </div>
+</div><!--/.fluid-container-->
+<script src="/javaScriptPackage/cz.payola.web.client.presenters.entity.analysis.AnalysisEditor" type="text/javascript"></script>
+<script type="text/javascript">
+    new cz.payola.web.client.presenters.entity.analysis.AnalysisEditor("client-canvas", "@id").initialize();
+</script>
+
+}

@@ -1,0 +1,33 @@
+@(user: cz.payola.domain.entities.User, form: Form[(String)])(flash: Flash)
+
+@import tags._
+
+@main(Some(user), "Create a new group :: Payola!", Some("Create a new group")) {
+
+<div class="container">
+
+    @helper.form(routes.Group.saveCreate()) {
+
+    @render_flash(flash)
+
+    <div class="well">
+        <fieldset>
+            <legend>Enter the group name</legend>
+            <div class="control-group">
+                <label class="control-label" for="name">Name</label>
+                <span class="controls">
+                    <input type="name" name="name" placeholder="Group name" id="name" value="@form("name").value" class="input col-lg-3">
+                </span>
+            </div>
+            <div class="control-group">
+                <span class="controls">
+                    <button type="submit" id="savebutton" class="btn btn-primary">Create Group</button>
+                </span>
+            </div>
+        </fieldset>
+    </div>
+
+    }
+</div>
+
+}

@@ -1,0 +1,13 @@
+@(user: Option[cz.payola.domain.entities.User])
+
+@main(user, "Payola!") {
+    <div class="container-fluid">
+        <div class="row" id="graph-view">
+        </div>
+    </div>
+
+    <script src="/javaScriptPackage/cz.payola.web.client.presenters.GraphPresenter" type="text/javascript"></script>
+    <script type="text/javascript">
+        new cz.payola.web.client.presenters.GraphPresenter("graph-view").initialize();
+    </script>
+}

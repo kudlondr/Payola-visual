@@ -1,0 +1,33 @@
+@(user: Option[cz.payola.domain.entities.User], analysis: cz.payola.domain.entities.Analysis, canTakeOwnership: Boolean)
+
+@main(user, "Analysis "+analysis.name+" :: Payola!") {
+<div class="container-fluid">
+    <div class="pull-right">
+        <div class="btn-group">
+            @if(analysis.owner != None && analysis.owner == user) {
+                <a href="@routes.Analysis.edit(analysis.id)" class="btn btn-default btn-small"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+            }
+            @if(canTakeOwnership){
+                <a href="@routes.Analysis.takeOwnership(analysis.id)" class="btn btn-default btn-small"><i class="glyphicon glyphicon-magnet"></i> Take ownership</a>
+            }
+            @if(user.isDefined){
+                <a href="@routes.Analysis.cloneAndEdit(analysis.id)" class="btn btn-default btn-small"><i class="glyphicon glyphicon-retweet"></i> Clone &amp; edit</a>
+            }
+        </div>
+    </div>
+    <h1>
+        Detail of analysis: @analysis.name
+    </h1>
+    <p>@analysis.description</p>
+
+    <div class="row" id="client-canvas">
+
+
+    </div>
+</div><!--/.fluid-container-->
+
+<script src="/javaScriptPackage/cz.payola.web.client.presenters.entity.analysis.AnalysisRunner" type="text/javascript"></script>
+<script type="text/javascript">
+    new cz.payola.web.client.presenters.entity.analysis.AnalysisRunner("client-canvas", "@analysis.id").initialize();
+</script>
+}

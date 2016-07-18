@@ -1,0 +1,32 @@
+@(user: cz.payola.domain.entities.User)(flash: Flash)
+
+@import tags._
+
+@main(Some(user), "Add private data :: Payola!", Some("Upload Data to Private RDF Storage")) {
+
+<div class="container-fluid">
+
+        @render_flash(flash)
+
+        <form id="file-uploader-form" name="file_upload_form" method="post" action="@routes.PrivateDataStorage.saveFromFile()" enctype="multipart/form-data">
+            <div class="well" id="file-uploader">
+
+            </div>
+        </form>
+
+        <ul class="breadcrumb">
+            <li class="active">Upload from URL</li>
+        </ul>
+        <form id="url-uploader-form" name="url_upload_form" method="post" action="@routes.PrivateDataStorage.saveFromURL()">
+            <div class="well" id="url-uploader">
+
+            </div>
+        </form>
+
+
+    <script src="/javaScriptPackage/cz.payola.web.client.presenters.PrivateDataUploader" type="text/javascript"></script>
+    <script type="text/javascript">
+        new cz.payola.web.client.presenters.PrivateDataUploader("file-uploader", "url-uploader", "@routes.Profile.index(user.name)").initialize();
+    </script>
+</div>
+}

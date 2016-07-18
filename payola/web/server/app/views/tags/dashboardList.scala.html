@@ -1,0 +1,58 @@
+@(
+    title: String,
+    entitiesNamePlural: String,
+    entities: Seq[cz.payola.domain.Entity],
+    createCall: Option[play.api.mvc.Call],
+    entityLister: (cz.payola.domain.Entity) => scala.xml.NodeBuffer,
+    boxClass: String,
+    listCall: play.api.mvc.Call,
+    entitiesToDisplay: Int = 5
+)
+
+<div class="col-lg-6">
+
+    @if(entities.isEmpty){
+        <div class="alert alert-warning">
+            <h2 class="alert-heading">No @entitiesNamePlural.</h2>
+
+            <div class="alert-block">
+                @if(createCall.isDefined){
+                No stress! You can create one by hitting
+                <a class="btn btn-success" href="@createCall">
+                    <i class="glyphicon-plus glyphicon"></i> Create
+                </a>
+                }
+            </div>
+        </div>
+    }else{
+        <div class="panel @boxClass">
+            <div class="panel-heading">
+                <h3 class="panel-title">@title</h3>
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                @entities.take(5).map{e =>
+                    <tr>
+                        @entityLister(e)
+                    </tr>
+                }
+                </table>
+            </div>
+            <div class="panel-footer">
+                @if(entities.size > 5){
+                    <a class="btn btn-primary btn-xs" href="@listCall"><i class="glyphicon-list glyphicon"></i> View all &raquo;</a>
+                }else{
+                    @if(createCall.isDefined){
+                        <span class=""></span>
+                    }
+                }
+
+                @if(createCall.isDefined){
+                    <a class="btn btn-success btn-xs" href="@createCall">
+                        <i class="glyphicon-plus glyphicon"></i> Create
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div><!--/span-->

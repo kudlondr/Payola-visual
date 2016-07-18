@@ -1,0 +1,53 @@
+@(user: cz.payola.domain.entities.User, form: Form[(String,String, String)], flash: Flash)
+
+@main(Some(user), "Edit your profile :: Payola!", Some("Edit your profile")) {
+<div class="container">
+
+
+    @flash.get("error").map { message =>
+    <p class="alert alert-danger">
+        @message
+    </p>
+    }
+
+    @form.globalError.map { error =>
+    <p class="alert alert-danger">
+        @error.message
+    </p>
+    }
+
+    <form action="@{routes.Profile.save()}" method="post" class="form-horizontal">
+
+    <div class="well">
+        <fieldset>
+            <legend>Change your details</legend>
+            <div class="control-group">
+                <label class="control-label" for="email">Email</label>
+                <div class="controls">
+                    <input type="email" name="email" placeholder="Email" id="email" value="@form("email").value" class="input-large">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="password">Current password</label>
+                <div class="controls">
+                    <input type="password" name="oldpassword" id="oldpassword" placeholder="Current password" class="input-large">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="password">Password</label>
+                <div class="controls">
+                    <input type="password" name="password" id="password" placeholder="Password" class="input-large">
+                </div>
+            </div>
+            <div class="control-group">
+                <span class="controls">
+                    <button type="submit" id="loginbutton" class="btn btn-primary">Save changes</button>
+                </span>
+            </div>
+        </fieldset>
+    </div>
+
+    </form>
+</div>
+
+}

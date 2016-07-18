@@ -1,0 +1,72 @@
+@(user: Option[cz.payola.domain.entities.User], dataSources: Seq[cz.payola.domain.entities.plugins.DataSource], page: Int = 1, customTitle: Option[String] = None)
+
+@import cz.payola.web.shared._
+@import tags._
+
+@deleteLinkForID(id: String) = @{
+<div class="btn-group"><a href={routes.DataSource.delete(id).toString} class="btn btn-danger" onclick="return confirm('Are you sure?')"><i class="glyphicon-remove-sign glyphicon"></i> Delete</a></div><span> </span>
+}
+
+@detailsLinkForID(id: String, name: String) = @{
+    <a href={routes.DataSource.detail(id, None).toString}>{name}</a>
+}
+
+@editLinkForID(id: String) = @{
+    <div class="btn-group"><a href={routes.DataSource.edit(id).toString} class="btn"><i class="glyphicon-pencil"></i> Edit</a></div><span> </span>
+}
+
+@shareLinkForID(id: String, name: String, isPublic: Boolean) = @{
+    <div class="btn-group share-button-placeholder"
+         data-id={id}
+         data-name={name}
+         data-is-public={isPublic.toString}>
+    </div>
+}
+
+@list_entities(user,
+    "data source",
+    "data sources",
+    dataSources.size,
+    { case (page, itemsPerPage) =>
+        val subseq = dataSources.drop((page - 1) * itemsPerPage)
+        if (itemsPerPage > subseq.size){
+            subseq
+        }else{
+            subseq.take(itemsPerPage)
+        }
+    }, { Unit =>
+        new scala.xml.NodeBuffer() += <td>Name</td>
+    }, { e: cz.payola.domain.Entity =>
+        <td class="listing-name">{
+            detailsLinkForID(e.id, e.asInstanceOf[cz.payola.domain.entities.plugins.DataSource].name)
+        }</td>
+        <td><div class="btn-toolbar">{
+            val dataSource = e.asInstanceOf[cz.payola.domain.entities.plugins.DataSource]
+            val buff = new scala.xml.NodeBuffer()
+
+            if (dataSource.owner == user) {
+                if (dataSource.isEditable) {
+                    buff ++= {editLinkForID(e.id)}
+                }
+                buff += {shareLinkForID(e.id, dataSource.name, dataSource.isPublic)}
+                if (dataSource.isEditable) {
+                    buff ++= deleteLinkForID(e.id)
+                }
+            } else {
+                buff += <span class="badge">Not editable</span>
+            }
+
+            buff
+        }</div></td>
+    },
+    routes.DataSource.create(),
+    page,
+    customTitle)
+
+<script language="javascript" type="text/javascript" src="/javaScriptPackage/cz.payola.web.client.presenters.entity.SharingPresenter"></script>
+<script type="text/javascript">
+    new cz.payola.web.client.presenters.entity.SharingPresenter(
+        document.getElementsByClassName("share-button-placeholder"),
+        "@cz.payola.common.Entity.getClassName(classOf[cz.payola.common.entities.plugins.DataSource])"
+    ).initialize();
+</script>

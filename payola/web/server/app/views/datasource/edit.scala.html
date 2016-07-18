@@ -1,0 +1,22 @@
+@(user: cz.payola.domain.entities.User, dataSource: cz.payola.domain.entities.plugins.DataSource)
+
+@main(Some(user), "Data source :: Payola!") {
+
+<div class="container-fluid">
+    <div class="row" style="padding-bottom: 20px;">
+        <h1 class="col-lg-8">Edit data source: @dataSource.name</h1>
+        <a href="@routes.DataSource.delete(dataSource.id)" onclick="return confirm('Are you sure?');" class="btn btn-danger col-lg-2"><i class="glyphicon-remove-circle glyphicon"></i> Delete</a>
+        <a href="@routes.DataSource.detail(dataSource.id, None)" class="btn col-lg-2"><i class="glyphicon-globe"></i> Browse</a>
+    </div>
+
+    <div id="data-source-properties" class="row">
+    </div>
+</div>
+<script src="/javaScriptPackage/cz.payola.web.client.presenters.entity.plugins.DataSourceEditor" type="text/javascript"></script>
+<script type="text/javascript">
+    new cz.payola.web.client.presenters.entity.plugins.DataSourceEditor(
+        document.getElementById('data-source-properties'),
+        '@dataSource.id'
+    ).initialize();
+</script>
+}

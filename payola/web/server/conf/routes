@@ -1,0 +1,92 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Application.dashboard()
+GET     /login                      controllers.Application.login()
+GET     /signup                     controllers.Application.signup()
+POST    /authenticate               controllers.Application.authenticate()
+POST    /register                   controllers.Application.register()
+GET     /logout                     controllers.Application.logout()
+GET     /forgot                     controllers.Application.resetPassword()
+POST    /reset                      controllers.Application.reallyResetPassword()
+GET    /reset/:id                 controllers.Application.confirmReset(id)
+
+GET     /javaScriptPackage/:symbol  controllers.Application.javaScriptPackage(symbol: String)
+POST    /RPC                        controllers.RPC.index()
+POST    /RPC/async                  controllers.RPC.async()
+
+GET     /analysis/accessible        controllers.Analysis.listAccessible(page: Int ?= 1)
+GET     /analysis/accessible/:uid   controllers.Analysis.listAccessibleByOwner(uid,page: Int ?= 1)
+GET     /analysis/list              controllers.Analysis.list(page: Int ?= 1)
+GET     /analysis/create            controllers.Analysis.create
+GET     /analysis/edit/:id          controllers.Analysis.edit(id)
+GET     /analysis/take-ownership/:id          controllers.Analysis.takeOwnership(id)
+GET     /analysis/delete/:id        controllers.Analysis.delete(id)
+GET     /analysis/clone/:id         controllers.Analysis.cloneAndEdit(id)
+GET     /analysis/:id               controllers.Analysis.detail(id)
+GET     /visualize                  controllers.Analysis.visualizeAnonymously(endpointUri: String, graphUri: List[String], classUri: Option[String] ?= None, propertyUri: Option[String] ?= None)
+
+GET     /analysis/:analysisID/evaluation/:evaluationID/download.rdf   controllers.GraphDownloader.downloadAnalysisEvaluationResultAsXML(analysisID, evaluationID)
+GET     /analysis/:analysisID/evaluation/:evaluationID/download.ttl   controllers.GraphDownloader.downloadAnalysisEvaluationResultAsTTL(analysisID, evaluationID)
+
+GET     /datasource/create          controllers.DataSource.create()
+POST    /datasource/create          controllers.DataSource.createNew()
+GET     /datasource/list            controllers.DataSource.list(page: Int ?= 1)
+GET     /datasource/accessible      controllers.DataSource.listAccessible(page: Int ?= 1)
+GET     /datasource/accessible/:uid controllers.DataSource.listAccessibleByOwner(uid,page: Int ?= 1)
+GET     /datasource/:id             controllers.DataSource.detail(id, uri: Option[String])
+GET     /datasource/edit/:id        controllers.DataSource.edit(id)
+GET     /datasource/delete/:id      controllers.DataSource.delete(id)
+POST    /datasource/save/:id        controllers.DataSource.saveEdited(id)
+
+GET    /datacube/:evaluationId/list-dsds              controllers.DataCube.findDataStructureDefinitions(evaluationId: String)
+GET    /datacube/:evaluationId/list-dimensions        controllers.DataCube.listDimensions(evaluationId: String, dsdUri: String)
+GET    /datacube/:evaluationId/list-measures          controllers.DataCube.listMeasures(evaluationId: String, dsdUri: String)
+GET    /datacube/:evaluationId/list-attributes        controllers.DataCube.listAttributes(evaluationId: String, dsdUri: String)
+
+GET     /virtuoso/add               controllers.PrivateDataStorage.add()
+POST     /virtuoso/upload/file           controllers.PrivateDataStorage.saveFromFile()
+POST     /virtuoso/upload/url           controllers.PrivateDataStorage.saveFromURL()
+
+GET     /plugin/create              controllers.Plugin.createPlugin()
+GET     /plugin/list                controllers.Plugin.listPlugins(page: Int ?= 1)
+GET     /plugin/approve/:className/:userID      controllers.Plugin.approvePlugin(className, userID)
+GET     /plugin/reject/:className/:userID      controllers.Plugin.rejectPlugin(className, userID)
+
+GET     /dashboard                  controllers.Application.dashboard()
+GET     /group/create               controllers.Group.create()
+GET     /group/list                 controllers.Group.list()
+GET     /group/delete/:id           controllers.Group.delete(id)
+GET     /group/edit/:id             controllers.Group.edit(id)
+POST    /group/save-create          controllers.Group.saveCreate()
+POST    /group/save                 controllers.Group.save(id)
+GET     /profile/edit               controllers.Profile.edit()
+GET     /profile/:username          controllers.Profile.index(username)
+POST    /saveprofile                controllers.Profile.save()
+
+GET     /prefix/create               controllers.Prefix.create()
+GET     /prefix/list                 controllers.Prefix.list()
+GET     /prefix/delete/:id           controllers.Prefix.delete(id)
+GET     /prefix/edit/:id             controllers.Prefix.edit(id)
+POST    /prefix/save-create          controllers.Prefix.saveCreate()
+POST    /prefix/save                 controllers.Prefix.save(id)
+
+GET     /cachestore/list            controllers.CacheStore.list(page: Int ?= 1)
+GET     /cachestore/delete/:id      controllers.CacheStore.delete(id)
+GET     /cachestore/create/:id      controllers.CacheStore.create(id)
+GET     /cachestore/embed/:id       controllers.CacheStore.embed(id)
+
+GET     /error                      controllers.ErrorHandler.error()
+GET     /404.html                   controllers.ErrorHandler.notFound()
+
+GET     /visualize/datacube/:evaluationId  controllers.Visualization.datacube(evaluationId)
+
+GET     /evaluation/:evaluationId.rdf       controllers.Evaluation.rdf(evaluationId)
+GET     /evaluation/query/list-cubes/:evaluationId          controllers.DataCube.findDataStructureDefinitions(evaluationId)
+GET     /evaluation/query/distinct-values/:evaluationId     controllers.DataCube.distinctValues(evaluationId: String, property: String, isDate: Boolean)
+GET     /evaluation/query/data/:evaluationId                controllers.DataCube.filteredData(evaluationId: String, measure: String, dimension: String, filters: List[String])
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
