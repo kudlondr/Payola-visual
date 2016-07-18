@@ -1,4 +1,4 @@
-Backup of Payola visual-Cache extension from https://github.com/payola/Payola.
+This fork of https://github.com/payola/Payola conserns an extension of Payola by adding a caching mechanizm of analyzed data to provide more user responsive interface a other features like Payola embedding.   
 
 <a name="top"></a>
 
