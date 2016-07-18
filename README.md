@@ -1,3 +1,5 @@
+Backup of Payola visual-Cache extension from https://github.com/payola/Payola.
+
 <a name="top"></a>
 
 
@@ -5,9 +7,9 @@
 
 Payola is an HTML5 web application which lets you work with graph data in a completely new way. You can visualize [Linked Data](http://linkeddata.org/) using several preinstalled plugins as graphs, tables, etc. This also means, that you no longer need [Pubby](http://www4.wiwiss.fu-berlin.de/pubby/) to browse through a Linked Data storage (via its [SPARQL](http://www.w3.org/TR/rdf-sparql-query/) endpoint). Moreover, you can create an analysis and run it against a set of SPARQL endpoints without deep knowledge of SPARQL language itself. Analysis results are processed and visualized using the embedded visualization plugins.
 
-For more information about functions and features of the Payola, please refer to the [User Guide](https://github.com/siroky/Payola/blob/develop/docs/user_guide.md) where all of them are described. If you're interested in forking or modifying the Payola, please look at the [Developer Guide](https://github.com/siroky/Payola/blob/develop/docs/developer_guide.md)
+For more information about functions and features of the Payola, please refer to the [User Guide](https://github.com/kudlondr/Payola-visual/blob/master/docs/user_guide.md) where all of them are described. If you're interested in forking or modifying the Payola, please look at the [Developer Guide](https://github.com/kudlondr/Payola-visual/blob/master/docs/developer_guide.md)
 
-![Payola overview](https://raw.github.com/siroky/Payola/develop/docs/img/screenshots/payola_overview.png)
+![Payola overview](https://github.com/kudlondr/Payola-visual/blob/master/docs/img/screenshots/payola_overview.png)
 
 ## Ready to give it a try? See our sample visualizations
 - [Map visualization](http://vis.payola.cz/coi-gmaps) - Inspections of [CTIA](http://www.coi.cz/en/) - Czech Trade Inspection Agency - shown on a Google map with filtering capabilities
@@ -30,7 +32,7 @@ If you are a developer, you can also contribute with your own analytical plugin 
 
 ## Setting up
 
-Prerequisities of the Payola are installed and running local Virtuoso server and H2 database. The following text assumes, that both are installed with default settings. It's just a head start, for complete description of installation and configuration, see the [Installation Guide](https://github.com/siroky/Payola/blob/develop/docs/installation_guide.md).
+Prerequisities of the Payola are installed and running local Virtuoso server and H2 database. The following text assumes, that both are installed with default settings. It's just a head start, for complete description of installation and configuration, see the [Installation Guide](https://github.com/kudlondr/Payola-visual/blob/master/docs/installation_guide.md).
 
 First of all, clone the Payola git repository: `git://github.com/siroky/Payola.git` to a local folder. As the cloned repository contains just source code, it is necessary to compile Payola in order to run it. Open a command line (console, terminal) and make payola subdirectory the current working directory (e.g. by `cd payola`). Launch SBT (using the sbt.sh command or the sbt.bat on Windows) and enter the following commands:
 
@@ -74,4 +76,4 @@ GNU General Public License for more details.
 
 ### License acknowledgements
 
-Payola is built on top of other libraries and tools which we gratefully acknowledge: [details of these libraries, their version numbers and licenses](https://github.com/siroky/Payola/blob/develop/docs/developer_guide.md#used_libraries).
+Payola is built on top of other libraries and tools which we gratefully acknowledge: [details of these libraries, their version numbers and licenses](https://github.com/kudlondr/Payola-visual/blob/master/docs/developer_guide.md#used_libraries).

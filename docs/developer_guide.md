@@ -5,7 +5,7 @@
 
 Purpose of this document is to describe in depth implementation ideas behind the Payola and help the developers, who'd like to extend or modify the application, to get familiar with the project. 
 
-The Payola application consists of several layers and libraries that are all enclosed within a solution project `payola`. The following sections describe structure of the solution, the functionality hidden within the layers and libraries and their relations. For information how to install, compile and run the Payola, please refer to the [Installation Guide](https://raw.github.com/payola/Payola/master/docs/installation_guide.md).
+The Payola application consists of several layers and libraries that are all enclosed within a solution project `payola`. The following sections describe structure of the solution, the functionality hidden within the layers and libraries and their relations. For information how to install, compile and run the Payola, please refer to the [Installation Guide](https://github.com/kudlondr/Payola-visual/blob/master/docs/installation_guide.md).
 
 ## Motivation
 
@@ -48,7 +48,7 @@ The solution is defined using the [SBT](https://github.com/harrah/xsbt/wiki/ "SB
 		- [`shared`](#shared)
 		- [`server`](#server)
 
-![Project depedencies](https://raw.github.com/payola/Payola/master/docs/img/project_dependencies.png)
+![Project depedencies](https://github.com/kudlondr/Payola-visual/master/docs/img/project_dependencies.png)
 
 Briefly, the project [`payola/project`](#project) defines this structure, dependencies between the projects, external dependencies and the build process, so it can be understood as a Makefile equivalent. Somewhat standalone libraries are the [`payola/scala2json`](#scala2json) project which provides means of Scala object serialization into the JSON format and [`payola/s2js`](#s2js) project which with all its subprojects enables us to write web applications in Scala (to compile Scala code to equivalent JavaScript code).
 
@@ -1091,7 +1091,9 @@ For each plugin instance type in a rendered analysis, the visualizer queries the
 
 While developing the Payola, we used the following technologies:
 
-- [SBT 0.11.2](https://github.com/harrah/xsbt/wiki/) (Scala Build Tool) - [License](https://github.com/harrah/xsbt/blob/0.11/LICENSE)
+- [SBT 0.11.2](https://
+- 
+- .com/harrah/xsbt/wiki/) (Scala Build Tool) - [License](https://github.com/harrah/xsbt/blob/0.11/LICENSE)
 - [Apache Jena 2.7.0-incubating](http://jena.apache.org/) (Java framework for building Semantic Web applications) - [License](http://jena.sourceforge.net/license.html)
 - [Squeryl](http://squeryl.org/) (Scala ORM) - [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html)
 - [Play! 2.0](http://www.playframework.org/) (Scala MVC web framework)- [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html)

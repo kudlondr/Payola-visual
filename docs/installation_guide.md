@@ -8,11 +8,13 @@ Payola requires a [Scala](http://www.scala-lang.org) environment, which is suppo
 
 Aside from the actual Payola server, you need to have a running [Squeryl-compatible](http://squeryl.org/supported-databases.html) relational database for storing user data, a [Virtuoso](http://virtuoso.openlinksw.com) server for storing personal RDF data and an SMTP server for the plugin approval process. The Virtuoso server needs to be running on the same server as Payola is, or at least share the same file system - when uploading private data, a path to a temporary file is passed to Virtuoso. The SMTP server and the relational database may be running on a different server (this is configurable in the `payola.conf` file as described later on).
 
+Tested version of Virtuoso is open-source 6.1.6.
+
 To work with Payola, a web browser capable of displaying HTML5 web pages is required. Payola takes an advantage of many HTML5 features - keep your web browser up-to-date all the time. Recommended are the *latest versions* of WebKit-based browsers (e.g. Chrome, Safari), Firefox, Opera, or IE. A 1440x900 or larger display is highly recommended.
 
 ## Installation
 
-First of all, clone the Payola git repository: `git://github.com/siroky/Payola.git` to a local folder.
+First of all, clone the Payola git repository: `git://github.com/kudlondr/Payola-visual.git` to a local folder.
 
 <a name="configuration"></a>
 ### Configuration 
@@ -40,6 +42,8 @@ Payola comes pre-configured to work with default settings of a Virtuoso server a
 `database.user` - database login name
 
 `database.password` - database login password
+
+Tested version of H2 is 1.3.172.
 
 #### User
 
