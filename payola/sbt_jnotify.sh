@@ -30,6 +30,8 @@ if [ ! -f "$LIB_PATH" ]; then
   echo 'Cleaning up'
   cp "$COMPILE_DIR"/Release/libjnotify.so "$LIB_PATH"
   rm -rf "$LIB_TEMP_DIR"
+
+  echo 'Launching SBT'
 fi
 
 "$JAVA_DIR"/bin/java -Xmx1024M -XX:MaxPermSize=512M -Xss2M -Djava.library.path="$LIB_DIR"/ -jar "$SCRIPT_DIR"/sbt-launch.jar "$@"
