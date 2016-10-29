@@ -1,4 +1,4 @@
-JAVA_DIR="/usr/lib/jvm/java-1.7.0-openjdk-amd64"
+export JAVA_HOME='/usr/lib/jvm/jdk-7-oracle-x64'
 SCRIPT_DIR=$(dirname "$0")
 LIB_DIR="$SCRIPT_DIR"/lib
 LIB_PATH="$LIB_DIR"/libjnotify.so
@@ -23,7 +23,7 @@ if [ ! -f "$LIB_PATH" ]; then
   SRC_ARCHIVE_PATH=$LIB_TEMP_DIR/jnotify-native-linux-0.94-src.zip
   mkdir $COMPILE_DIR
   unzip -d "$COMPILE_DIR" "$SRC_ARCHIVE_PATH" >/dev/null
-  export C_INCLUDE_PATH="$JAVA_DIR"/include/:"$JAVA_DIR"/include/linux/
+  export C_INCLUDE_PATH="$JAVA_HOME"/include/:"$JAVA_HOME"/include/linux/
 
   make -C "$COMPILE_DIR"/Release
   
@@ -34,4 +34,5 @@ if [ ! -f "$LIB_PATH" ]; then
   echo 'Launching SBT'
 fi
 
-"$JAVA_DIR"/bin/java -Xmx1024M -XX:MaxPermSize=512M -Xss2M -Djava.library.path="$LIB_DIR"/ -jar "$SCRIPT_DIR"/sbt-launch.jar "$@"
+
+$JAVA_HOME/jre/bin/java -Xmx1024M -XX:MaxPermSize=512M -Xss2M -Djava.library.path="$LIB_DIR"/ -jar "$SCRIPT_DIR"/sbt-launch.jar "$@"

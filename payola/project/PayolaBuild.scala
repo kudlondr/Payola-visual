@@ -59,6 +59,8 @@ object PayolaBuild extends Build
 
     /** Common default settings of all projects. */
     val defaultSettings = Defaults.defaultSettings ++ Seq(
+        javaHome := Some(file(System.getenv("JAVA_HOME"))),
+        javacOptions ++= Seq("-source", "1.7", "-target", "1.7"),
         scalaVersion := Settings.scalaVersion,
         scalacOptions ++= Seq(
             "-deprecation",
@@ -265,6 +267,8 @@ object PayolaBuild extends Build
     lazy val webServerProject = PlayProject(
         "server", PayolaSettings.version, Nil, path = file("web/server"), mainLang = SCALA
     ).settings(
+        javaHome := Some(file(System.getenv("JAVA_HOME"))),
+        javacOptions in Compile ++= Seq("-source", "1.7", "-target", "1.7"),
         compileAndPackage <<= (packageBin in Compile).dependsOn(clean).map { jarFile: File =>
             // Retrieve the dependencies.
             val dependencyExtensions = List("js", "css")
@@ -323,6 +327,7 @@ object PayolaBuild extends Build
                 dependencyBuffer += fileRuntimeRequires.get(file).flatten.mkString(",")
                 dependencyBuffer += "]\n"
             }
+
             new io.File(dependencyFile).writeAll(dependencyBuffer.mkString)
 
             jarFile
