@@ -134,9 +134,6 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
         Nil
     )
 
-    @javascript("""new cz.payola.web.client.views.elements.Text(new Date().getTime());""")
-    val timeBox = new Text("Change appearance")
-
     val languagesButton = new DropDownButton(
         List(new Icon(Icon.globe), new Text("Language")),
         Nil,
@@ -146,7 +143,7 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
     /**
      * Toolbar containing pluginChange, customization buttons
      */
-    val toolbar = new Div(List(pluginChangeButton, customizationsButton, timeBox), "btn-toolbar").setAttribute(
+    val toolbar = new Div(List(pluginChangeButton, customizationsButton), "btn-toolbar").setAttribute(
         "style", "margin-left: 0; margin-top: 15px; margin-bottom: 15px;")
 
     // Re-trigger all events when the corresponding events are triggered in the plugins.
