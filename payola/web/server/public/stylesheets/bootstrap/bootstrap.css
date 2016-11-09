@@ -5171,6 +5171,7 @@ button.close {
 .modal-body {
   position: relative;
   padding: 20px;
+  min-height: 200px;
 }
 .modal-footer {
   padding: 19px 20px 20px;
