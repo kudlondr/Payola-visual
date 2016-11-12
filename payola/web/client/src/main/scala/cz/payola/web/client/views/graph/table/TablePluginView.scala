@@ -68,67 +68,54 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
     }
 
     protected def createListingTools(): View = {
-        val info = new Text(getPageInfoText)
+        val infoText = new Text(getPageInfoText)
 
-        val firstPage = new Button(new Text("First"), "", new Icon(Icon.fast_backward))
-        firstPage.mouseClicked += { e =>
-            if (currentPage > 0) {
-                if(evaluationId.isDefined) {
-                    paginateToPage(0)
-                } else {
-                    currentPage = 0
-                    renderTablePage(currentGraph, currentPage)
-                    info.text = getPageInfoText
-                }
-            }
-            false
-        }
+        val previousPageButton = new Button(new Text("Previous"), "", new Icon(Icon.step_backward))
+        previousPageButton.setIsEnabled(currentPage != 0);
 
-        val previousPage = new Button(new Text("Previous"), "", new Icon(Icon.step_backward))
-        previousPage.mouseClicked += { e =>
-            if (currentPage > 0) {
-                if(evaluationId.isDefined) {
-                    paginateToPage(currentPage - 1)
-                } else {
-                    currentPage -= 1
-                    renderTablePage(currentGraph, currentPage)
-                    info.text = getPageInfoText
-                }
-            }
-            false
-        }
+        val firstPageButton = new Button(new Text("1"), "")
+        firstPageButton.setIsEnabled(currentPage != 0)
 
-        val nextPage = new Button(new Text("Next"), "", new Icon(Icon.step_forward))
-        nextPage.mouseClicked += { e =>
-            if (currentPage < pagesCount - 1) {
-                if(evaluationId.isDefined) {
-                    paginateToPage(currentPage + 1)
-                } else {
-                    currentPage += 1
-                    renderTablePage(currentGraph, currentPage)
-                    info.text = getPageInfoText
-                }
-            }
-            false
-        }
+        val middlePageButton = new Button(new Text("2"), "")
+        middlePageButton.setIsEnabled(currentPage != 1)
 
-        val lastPage = new Button(new Text("Last"), "", new Icon(Icon.fast_forward))
-        lastPage.mouseClicked += { e =>
-            if (currentPage < pagesCount - 1) {
-                if(evaluationId.isDefined) {
-                    paginateToPage(pagesCount - 1)
-                } else {
-                    currentPage = pagesCount - 1
-                    renderTablePage(currentGraph, currentPage)
-                    info.text = getPageInfoText
-                }
-            }
-            false
-        }
+        val currentPageValue = currentPage + 1
+        val currentPageButton = new Button(new Text(currentPageValue.toString), "")
+        currentPageButton.setIsEnabled(false)
+
+        val lastPageButton = new Button(new Text(pagesCount.toString), "")
+        lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
 
         val jumpTextArea = new TextInput("jump", "")
+        jumpTextArea.setAttribute("style", "width: 50px; display: inline")
+        jumpTextArea.maxLength = 3
         val jumpButton = new Button(new Text("Go"), "", new Icon(Icon.play))
+        jumpButton.setAttribute("style", "display: inline;")
+        jumpTextArea.keyPressed += { e =>
+            if(e.keyCode == 13) {
+                jumpTextArea.hide()
+                jumpButton.hide()
+                val jumpToPageNumber = jumpTextArea.value.toInt - 1
+                if(currentPage != jumpToPageNumber) {
+                    val goingToPage = if(jumpToPageNumber >= 0 && jumpToPageNumber <= pagesCount) {
+                        jumpToPageNumber } else { currentPage }
+
+                    if(evaluationId.isDefined) {
+                        paginateToPage(goingToPage)
+                    } else {
+                        currentPage = goingToPage
+                        renderTablePage(currentGraph, currentPage)
+                        infoText.text = getPageInfoText
+                    }
+                }
+                false
+            } else {
+                true
+            }
+        }
         jumpButton.mouseClicked += { e =>
+            jumpTextArea.hide()
+            jumpButton.hide()
             val jumpToPageNumber = jumpTextArea.value.toInt - 1
             if(currentPage != jumpToPageNumber) {
                 val goingToPage = if(jumpToPageNumber >= 0 && jumpToPageNumber <= pagesCount) {
@@ -139,18 +126,149 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                 } else {
                     currentPage = goingToPage
                     renderTablePage(currentGraph, currentPage)
-                    info.text = getPageInfoText
+                    infoText.text = getPageInfoText
                 }
             }
             false
         }
 
-        new Div(List(firstPage, previousPage, nextPage, lastPage, info, jumpTextArea, jumpButton)).setAttribute(
-            "style", "width:800px; margin: 0 auto;")
+        val jumpDiv = new Div(List(jumpTextArea, jumpButton))
+        jumpDiv.hide()
+
+        val jumpToPageButton1 = new Button(new Text("..."), "")
+        jumpToPageButton1.mouseClicked += { e =>
+            if(jumpDiv.getAttribute("style").contains("display: none")) {
+                jumpDiv.setAttribute("style", "display: inline; position: absolute; bottom: 40px; left: 140px;")
+            } else {
+                jumpDiv.hide()
+            }
+            false
+        }
+
+        val jumpToPageButton2 = new Button(new Text("..."), "")
+        jumpToPageButton2.mouseClicked += { e =>
+            if(jumpDiv.getAttribute("style").contains("display: none")) {
+                jumpDiv.setAttribute("style", "display: inline; position: absolute; bottom: 40px; left: 140px;")
+            } else {
+                jumpDiv.hide()
+            }
+            false
+        }
+
+        val nextPageButton = new Button(new Text("Next"), "", new Icon(Icon.step_forward))
+        nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+
+        previousPageButton.mouseClicked += { e =>
+            if (currentPage != 0) {
+                if(evaluationId.isDefined) {
+                    paginateToPage(currentPage - 1)
+                } else {
+                    currentPage -= 1
+                    renderTablePage(currentGraph, currentPage)
+                    infoText.text = getPageInfoText
+                    previousPageButton.setIsEnabled(currentPage != 0);
+                    firstPageButton.setIsEnabled(currentPage != 0)
+                    middlePageButton.setIsEnabled(currentPage != 1)
+                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                }
+            }
+            false
+        }
+        firstPageButton.mouseClicked += { e =>
+            if (currentPage != 0) {
+                if(evaluationId.isDefined) {
+                    paginateToPage(0)
+                } else {
+                    currentPage = 0
+                    renderTablePage(currentGraph, currentPage)
+                    infoText.text = getPageInfoText
+                    previousPageButton.setIsEnabled(currentPage != 0);
+                    firstPageButton.setIsEnabled(currentPage != 0)
+                    middlePageButton.setIsEnabled(currentPage != 1)
+                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                }
+            }
+            false
+        }
+        middlePageButton.mouseClicked += { e =>
+            if (currentPage != 1) {
+                if(evaluationId.isDefined) {
+                    paginateToPage(1)
+                } else {
+                    currentPage = 1
+                    renderTablePage(currentGraph, currentPage)
+                    infoText.text = getPageInfoText
+                    previousPageButton.setIsEnabled(currentPage != 0);
+                    firstPageButton.setIsEnabled(currentPage != 0)
+                    middlePageButton.setIsEnabled(currentPage != 1)
+                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                }
+            }
+            false
+        }
+        lastPageButton.mouseClicked += { e =>
+            if (currentPage != pagesCount - 1) {
+                if(evaluationId.isDefined) {
+                    paginateToPage(pagesCount - 1)
+                } else {
+                    currentPage = pagesCount - 1
+                    renderTablePage(currentGraph, currentPage)
+                    infoText.text = getPageInfoText
+                    previousPageButton.setIsEnabled(currentPage != 0);
+                    firstPageButton.setIsEnabled(currentPage != 0)
+                    middlePageButton.setIsEnabled(currentPage != 1)
+                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                }
+            }
+            false
+        }
+        nextPageButton.mouseClicked += { e =>
+            if (currentPage != pagesCount - 1) {
+                if(evaluationId.isDefined) {
+                    paginateToPage(currentPage + 1)
+                } else {
+                    currentPage += 1
+                    renderTablePage(currentGraph, currentPage)
+                    infoText.text = getPageInfoText
+                    previousPageButton.setIsEnabled(currentPage != 0);
+                    firstPageButton.setIsEnabled(currentPage != 0)
+                    middlePageButton.setIsEnabled(currentPage != 1)
+                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                }
+            }
+            false
+        }
+
+        val buttonsList = if(pagesCount <= 1) {
+            List(previousPageButton, firstPageButton, nextPageButton, infoText)
+        } else if(pagesCount == 2) {
+            List(previousPageButton, firstPageButton, lastPageButton, nextPageButton, infoText)
+        } else if(pagesCount == 3) {
+            List(previousPageButton, firstPageButton, middlePageButton, lastPageButton, nextPageButton, infoText)
+        } else {
+            if(currentPage == 0 || currentPage == pagesCount - 1) {
+                List(previousPageButton, firstPageButton, jumpToPageButton1, lastPageButton, nextPageButton, infoText, jumpDiv)
+            } else if(currentPage == 1) {
+                List(previousPageButton, firstPageButton, currentPageButton, jumpToPageButton2, lastPageButton, nextPageButton, infoText, jumpDiv)
+            } else if(currentPage == pagesCount - 2) {
+                List(previousPageButton, firstPageButton, jumpToPageButton1, currentPageButton, lastPageButton, nextPageButton, infoText, jumpDiv)
+            } else {
+                List(previousPageButton, firstPageButton, jumpToPageButton1, currentPageButton, jumpToPageButton2, lastPageButton, nextPageButton, infoText, jumpDiv)
+            }
+        }
+
+        val container = new Div(buttonsList).setAttribute("style", "width:800px; margin: 0 auto;")
+        container.setAttribute("style", "position: relative; left: calc(50% - 200px);")
+        container
     }
 
     private def getPageInfoText: String = {
-        "Page "+(currentPage + 1)+" of "+pagesCount +" ("+currentRecordsCount+" of "+allRecordsCount+" triples)"
+        "Showing "+currentRecordsCount+" of "+allRecordsCount+" triples"
     }
 
     private def paginateToPage(goingToPage: Int) {
