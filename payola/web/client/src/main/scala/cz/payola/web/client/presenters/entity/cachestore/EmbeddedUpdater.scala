@@ -43,6 +43,7 @@ class EmbeddedUpdater(analysisId: String, var evaluationId: String, embeddedHash
                         updateError(updateButtonId)
                     case s: EvaluationCompleted =>
                         updateEvaluationAnchor(evaluationId, newEvaluationId)
+                        updateDeleteButton(evaluationId, newEvaluationId, analysId)
                         updateSuccessful(updateButtonId, evaluationId)
                     case s: EvaluationTimeout =>
                         updateError(updateButtonId)
@@ -69,8 +70,16 @@ class EmbeddedUpdater(analysisId: String, var evaluationId: String, embeddedHash
                    var linkText = evaluationLinkElement.innerHTML;
                    linkText = linkText.substring(0, linkText.indexOf('evaluation'))+'evaluation='+newEvaluationId;
                    evaluationLinkElement.innerHTML = linkText;
-                """)
+                                                                                                       """)
     private def updateEvaluationAnchor(oldEvaluationId: String, newEvaluationId: String) {}
+
+    @javascript("""
+                   var deleteButtonElement = document.getElementById('delete'+oldEvaluationId);
+                   var buttonHref = deleteButtonElement.getAttribute('href');
+                   buttonHref = buttonHref.substring(0, buttonHref.indexOf('delete'))+'delete/'+newEvaluationId+'/'+analysId;
+                   deleteButtonElement.setAttribute('href', buttonHref);
+                """)
+    private def updateDeleteButton(oldEvaluationId: String, newEvaluationId: String, analysId: String) {}
 
     @javascript("""cacheStoreUpdateButtonResetErr(updateButtonElementId);""")
     private def updateError(updateButtonElementId: String) {}

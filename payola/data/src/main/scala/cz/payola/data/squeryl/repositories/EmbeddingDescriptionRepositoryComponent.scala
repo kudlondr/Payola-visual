@@ -43,8 +43,8 @@ trait EmbeddingDescriptionRepositoryComponent extends TableRepositoryComponent {
             selectOneWhere(ed => ed.uriHash === uriHash)
         }
 
-        def removeByAnalysisId(id: String): Boolean = wrapInTransaction {
-            table.deleteWhere(e => id === e.analysisResultId) == 1
+        def removeByEvaluationId(id: String): Boolean = wrapInTransaction {
+            table.deleteWhere(e => e.evaluationId === id) == 1
         }
 
         def setViewPlugin(id: String, visualPlugin: String): Option[EmbeddingDescription] = {

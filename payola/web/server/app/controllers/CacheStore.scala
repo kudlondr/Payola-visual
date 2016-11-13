@@ -26,19 +26,22 @@ object CacheStore extends PayolaController with Secured
         Ok(views.html.cachestore.list(user, cached, page)(request.flash))
     }
 
-    def delete(id: String) = authenticated { user =>
+    def delete(evaluationId: String, analysisId: String) = authenticated { user =>
         try
         {
-            Payola.model.embeddingDescriptionModel.removeByAnalysisId(id)
+            Payola.model.analysisResultStorageModel.removeGraph(evaluationId, analysisId)
 
-            val storedResult = user.availableAnalysesResults.find{ stored => stored.id == id }
+            Redirect(routes.CacheStore.list()).flashing("success" -> "The stored analysis result has been successfully removed.")
+
+            /*Payola.model.embeddingDescriptionModel.removeByEvaluationId(id)
+            val storedResult = user.availableAnalysesResults.find{ stored => stored.evaluationId == evaluationId }
             if (storedResult.isDefined) {
                 user.removeOwnedAnalysisResult(storedResult.get)
                 Redirect(routes.CacheStore.list()).flashing("success" -> "The stored analysis result has been successfully removed.")
             }
             else {
                 NotFound("The analysis result does not exist.")
-            }
+            }*/
         }
         catch {
             case validationExc: ValidationException =>

@@ -2,9 +2,9 @@
 
 @import tags._
 
-@deleteLinkForID(id: String) = @{
+@deleteLinkForID(evaluationId: String, analysisId: String) = @{
 <div class="btn-group">
-    <a href={routes.CacheStore.delete(id).toString} class="btn btn-danger" onclick="return confirm('Are you sure?')">
+    <a href={routes.CacheStore.delete(evaluationId, analysisId).toString} id={"delete"+evaluationId} class="btn btn-danger" onclick="return confirm('Are you sure?')">
         <i class="glyphicon-remove-sign glyphicon"/> Delete</a>
 </div>
 }
@@ -78,7 +78,7 @@
                         '{routes.CacheStore.embed(aRes.embeddingDescription.get.uriHash).toString}');
                 </script>
             } else {
-                createLinkForID(e.id)
+                createLinkForID(aRes.id)
             }
 
         }</td>
@@ -95,9 +95,9 @@
         <td class="listing-column-tiny">
             <div class="btn-toolbar">{
                 if(aRes.embeddingDescription.isDefined) {
-                    updateLinkForID(aRes.analysis.get.id, aRes.evaluationId, aRes.embeddingDescription.get.uriHash) ++ deleteLinkForID(e.id)
+                    updateLinkForID(aRes.analysis.get.id, aRes.evaluationId, aRes.embeddingDescription.get.uriHash) ++ deleteLinkForID(aRes.evaluationId, aRes.analysis.get.id)
                 } else {
-                    deleteLinkForID(e.id)
+                    deleteLinkForID(aRes.evaluationId, aRes.analysis.get.id)
                 }
             }</div>
         </td>

@@ -118,6 +118,14 @@ class User(protected var _name: String)
     }
 
     /**
+      * Adds the analysis result to the user results. The result has to be owned by the user.
+      * @param analysisResult result to be added
+      */
+    def addOwnedAnalysisResult(analysisResult: AnalysisResultType): Unit = {
+        addOwnedEntity(analysisResult, availableAnalysesResults, discardStoredAnalysisResult)
+    }
+
+    /**
      * Removes the specified prefix from the users owned prefixes.
      * @param prefix The prefix to be removed.
      * @return The removed prefix.

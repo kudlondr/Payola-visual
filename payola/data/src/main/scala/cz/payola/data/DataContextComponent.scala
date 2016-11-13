@@ -366,7 +366,7 @@ trait DataContextComponent
 
         def getEmbeddedByUriHash(uriHash: String): Option[EmbeddingDescription]
 
-        def removeByAnalysisId(id: String): Boolean
+        def removeByEvaluationId(id: String): Boolean
 
         def setViewPlugin(id: String, visualPlugin: String): Option[EmbeddingDescription]
 
