@@ -71,20 +71,15 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
         val infoText = new Text(getPageInfoText)
 
         val previousPageButton = new Button(new Text("Previous"), "", new Icon(Icon.step_backward))
-        previousPageButton.setIsEnabled(currentPage != 0);
 
         val firstPageButton = new Button(new Text("1"), "")
-        firstPageButton.setIsEnabled(currentPage != 0)
 
         val middlePageButton = new Button(new Text("2"), "")
-        middlePageButton.setIsEnabled(currentPage != 1)
 
         val currentPageValue = currentPage + 1
         val currentPageButton = new Button(new Text(currentPageValue.toString), "")
-        currentPageButton.setIsEnabled(false)
 
         val lastPageButton = new Button(new Text(pagesCount.toString), "")
-        lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
 
         val jumpTextArea = new TextInput("jump", "")
         jumpTextArea.setAttribute("style", "width: 50px; display: inline")
@@ -158,6 +153,10 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
         val nextPageButton = new Button(new Text("Next"), "", new Icon(Icon.step_forward))
         nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
 
+        setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton, currentPageButton,
+            lastPageButton, nextPageButton)
+
+
         previousPageButton.mouseClicked += { e =>
             if (currentPage != 0) {
                 if(evaluationId.isDefined) {
@@ -166,11 +165,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                     currentPage -= 1
                     renderTablePage(currentGraph, currentPage)
                     infoText.text = getPageInfoText
-                    previousPageButton.setIsEnabled(currentPage != 0);
-                    firstPageButton.setIsEnabled(currentPage != 0)
-                    middlePageButton.setIsEnabled(currentPage != 1)
-                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
-                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton)
                 }
             }
             false
@@ -183,11 +179,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                     currentPage = 0
                     renderTablePage(currentGraph, currentPage)
                     infoText.text = getPageInfoText
-                    previousPageButton.setIsEnabled(currentPage != 0);
-                    firstPageButton.setIsEnabled(currentPage != 0)
-                    middlePageButton.setIsEnabled(currentPage != 1)
-                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
-                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton)
                 }
             }
             false
@@ -200,11 +193,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                     currentPage = 1
                     renderTablePage(currentGraph, currentPage)
                     infoText.text = getPageInfoText
-                    previousPageButton.setIsEnabled(currentPage != 0);
-                    firstPageButton.setIsEnabled(currentPage != 0)
-                    middlePageButton.setIsEnabled(currentPage != 1)
-                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
-                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton)
                 }
             }
             false
@@ -217,11 +207,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                     currentPage = pagesCount - 1
                     renderTablePage(currentGraph, currentPage)
                     infoText.text = getPageInfoText
-                    previousPageButton.setIsEnabled(currentPage != 0);
-                    firstPageButton.setIsEnabled(currentPage != 0)
-                    middlePageButton.setIsEnabled(currentPage != 1)
-                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
-                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton)
                 }
             }
             false
@@ -234,11 +221,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                     currentPage += 1
                     renderTablePage(currentGraph, currentPage)
                     infoText.text = getPageInfoText
-                    previousPageButton.setIsEnabled(currentPage != 0);
-                    firstPageButton.setIsEnabled(currentPage != 0)
-                    middlePageButton.setIsEnabled(currentPage != 1)
-                    lastPageButton.setIsEnabled(currentPage != pagesCount - 1)
-                    nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
+                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton)
                 }
             }
             false
@@ -265,6 +249,25 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
         val container = new Div(buttonsList).setAttribute("style", "width:800px; margin: 0 auto;")
         container.setAttribute("style", "position: relative; left: calc(50% - 200px);")
         container
+    }
+
+    private def setEnabledPaginationButtons(previousPageButton: Button, firstPageButton: Button, middlePageButton: Button,
+                                            currentPageButton: Button, lastPageButton: Button, nextPageButton: Button): Unit = {
+
+        if(currentPage == 0) {
+            previousPageButton.setIsEnabled(false)
+            firstPageButton.setIsEnabled(false)
+            firstPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
+        } else if(currentPage == 1) {
+            middlePageButton.setIsEnabled(currentPage != 1)
+        } else if(currentPage == pagesCount - 1) {
+            nextPageButton.setIsEnabled(false)
+            lastPageButton.setIsEnabled(false)
+            lastPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
+        }
+
+        currentPageButton.setIsEnabled(false)
+        currentPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
     }
 
     private def getPageInfoText: String = {
