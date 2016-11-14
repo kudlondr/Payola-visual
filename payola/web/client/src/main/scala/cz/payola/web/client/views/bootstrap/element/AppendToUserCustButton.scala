@@ -14,7 +14,7 @@ class AppendToUserCustButton (var availableValues: Seq[String], buttonLabel: Str
     private val heading = new Heading(List(new Text(listTitle))).setAttribute(
         "style", "padding-top: 5px; padding-bottom: 5px;")
 
-    private val inputField = new TextInput("name", "", "Input custom", "col-lg-6")
+    private val inputField = new TextInput("name", "", "Input custom", "col-lg-6").setAttribute("style", "width: 500px;")
 
     private val addButton = new Button(new Text("Add"))
     addButton.mouseClicked += { e =>
@@ -47,7 +47,7 @@ class AppendToUserCustButton (var availableValues: Seq[String], buttonLabel: Str
                 false
             }
             availableClassAnch
-        }).setAttribute("style", "overflow: auto; height: 350px;")
+        }).setAttribute("style", "overflow: auto; height: 280px;")
 
     private val classDiv = new Div(List(classNameInput, heading, valuesDiv),"append-popup dropdown-menu").setAttribute(
         "style","position: fixed !important; left: 50% !important; top: 50% !important;"+
