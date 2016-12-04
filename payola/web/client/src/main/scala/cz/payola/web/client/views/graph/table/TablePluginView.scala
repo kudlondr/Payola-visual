@@ -259,7 +259,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
             firstPageButton.setIsEnabled(false)
             firstPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
         } else if(currentPage == 1) {
-            middlePageButton.setIsEnabled(currentPage != 1)
+            middlePageButton.setIsEnabled(false)
+            middlePageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
         } else if(currentPage == pagesCount - 1) {
             nextPageButton.setIsEnabled(false)
             lastPageButton.setIsEnabled(false)
