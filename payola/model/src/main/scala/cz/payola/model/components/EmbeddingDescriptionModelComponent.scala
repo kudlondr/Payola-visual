@@ -30,8 +30,8 @@ trait EmbeddingDescriptionModelComponent
             def exists(embedId: String): Boolean =
                 embeddingDescriptionRepository.getEmbeddedById(embedId).isDefined
 
-            def removeByAnalysisId(analysisId: String) {
-                embeddingDescriptionRepository.removeByAnalysisId(analysisId)
+            def removeByEvaluationId(evalId: String) {
+                embeddingDescriptionRepository.removeByEvaluationId(evalId)
             }
 
             def setViewPlugin(id: String, visualPlugin: String): Option[entities.EmbeddingDescription] = {
