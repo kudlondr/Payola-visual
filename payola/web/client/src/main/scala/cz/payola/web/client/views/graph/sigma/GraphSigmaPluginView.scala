@@ -56,6 +56,10 @@ class GraphSigmaPluginView(prefixApplier: Option[PrefixApplier]) extends SigmaPl
         }
     }
 
+    override def disableInfo(): Unit = {
+        hideVertexInfo()
+    }
+
     /**
      * Gets rdf type to specify the type required for drawing and getting drawing configuration based on an ontology.
      * @param edges to search for an edge with Edge.rdfTypeEdge uri
@@ -102,6 +106,7 @@ class GraphSigmaPluginView(prefixApplier: Option[PrefixApplier]) extends SigmaPl
     }
 
     @javascript("""
+         if(self.mousedrag) { return; }
          if(self.popUp) { self.popUp.destroy(); self.popUp = false; }
          var nodeContent = event.data.node.value;
          if(typeof nodeContent == 'undefined' || nodeContent == null || nodeContent.isEmpty())

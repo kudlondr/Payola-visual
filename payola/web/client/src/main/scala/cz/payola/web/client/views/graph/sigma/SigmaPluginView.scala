@@ -34,6 +34,9 @@ abstract class SigmaPluginView(name: String, prefixApplier: Option[PrefixApplier
     protected var mouseX = 0.0
     protected var mouseY = 0.0
 
+    protected var mousedown = false
+    protected var mousedrag = false
+
     private var edgesNum = 0
 
     protected var sigmaInstance: Option[sigma.Sigma] = None
@@ -63,7 +66,7 @@ abstract class SigmaPluginView(name: String, prefixApplier: Option[PrefixApplier
     private def updateSigmaPluginSize(parent: html.Element) {
 
         val width = window.innerWidth - parent.offsetLeft
-        val height = window.innerHeight - parent.offsetTop
+        val height = window.innerHeight - scala.math.max(200, parent.offsetTop)
 
         sigmaPluginWrapper.setAttribute("style", "padding: 0 5px; min-width: "+
             width+"px; min-height: "+height+"px;")
@@ -103,7 +106,7 @@ abstract class SigmaPluginView(name: String, prefixApplier: Option[PrefixApplier
     }
 
     @javascript("""
-                   return new sigma({
+                   var _siginst = new sigma({
                         graph: {
                             nodes: nodeList,
                             edges: edgeList
@@ -116,8 +119,14 @@ abstract class SigmaPluginView(name: String, prefixApplier: Option[PrefixApplier
                             edgeLabels: true
                         }
                    });
+                   _siginst.renderers[0].container.lastChild.addEventListener('mousedown', function(event) { self.mousedown = true; });
+                   _siginst.renderers[0].container.lastChild.addEventListener('mouseup', function(event) { self.mousedown = false; self.mousedrag = false; });
+                   _siginst.renderers[0].container.lastChild.addEventListener('mousemove', function(event) { if(self.mousedown) { self.mousedrag = true; self.disableInfo() }});
+                   return _siginst
                 """)
     protected def initSigma(nodeList: List[NodeProperties], edgeList: List[EdgeProperties], wrapper: Element): sigma.Sigma = null
+
+    def disableInfo()
 
     def setDrawingProperties()
 
@@ -169,6 +178,8 @@ abstract class SigmaPluginView(name: String, prefixApplier: Option[PrefixApplier
             val modal = new FatalErrorModal(error.toString())
             modal.render()
         }
+
+        parentElement.foreach(updateSigmaPluginSize(_))
     }
 
     def getGraphView = graphView

@@ -385,6 +385,7 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
                 currentPlugin.setEvaluationId(evaluationId)
                 currentPlugin.setBrowsingURI(browsingURI)
                 currentPlugin.loadDefaultCachedGraph(evaluationId.get, {toUpdate =>
+                    currentPlugin.render(pluginSpace.htmlElement)
                     toUpdate match {
                         case smth: Some[_] =>
                             smth.get match {
@@ -404,7 +405,6 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
                     }
                     languagesButton.render(toolbar.htmlElement)
                     currentPlugin.renderControls(toolbar.htmlElement)
-                    currentPlugin.render(pluginSpace.htmlElement)
                 })
             } else {
                 //this is correct, since googleMap (which uses serialized graph) plugin is not available in browsing mode
