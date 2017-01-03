@@ -49,10 +49,9 @@ object CacheStore extends PayolaController with Secured
         }
     }
 
-    def create(id: String) = authenticated {user =>
-        try
-        {
-            val storedResult = user.availableAnalysesResults.find{ stored => stored.id == id }
+    def create(id: String) = authenticated { user =>
+        try {
+            val storedResult = user.availableAnalysesResults.find { stored => stored.id == id }
             if (storedResult.isDefined) {
                 val embeddingDesc = Payola.model.embeddingDescriptionModel.createEmbedded(storedResult.get)
 
@@ -68,7 +67,7 @@ object CacheStore extends PayolaController with Secured
         }
     }
 
-    def embed(uriHash: String) = authenticated { user =>
+    def embed(uriHash: String) = maybeAuthenticated { user: Option[User] =>
         val analysisResult = Payola.model.embeddingDescriptionModel.getEmbeddedAnalysisResult(uriHash)
         if(analysisResult.isDefined) {
 
@@ -78,7 +77,7 @@ object CacheStore extends PayolaController with Secured
                 } else {
                     "evaluation="+analysisResult.get._1.evaluationId
                 }
-            Redirect(routes.Analysis.detail(analysisResult.get._1.analysisId+"#"+parameters))/*,
+            Redirect(routes.Analysis.embeddedDetail(analysisResult.get._1.analysisId+"#"+parameters))/*,
                 Some(analysisResult.get._1.evaluationId), analysisResult.get._2.defaultVisualPlugin))*/
         } else {
             NotFound("The embedded analysis result does not exist.")

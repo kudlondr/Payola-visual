@@ -56,6 +56,10 @@ trait AnalysisResultStorageModelComponent
                 analysisResultRepository.byEvaluationId(evaluationId).map{r => r.analysisId}.getOrElse("")
             }
 
+            def byEvaluationId(evaluationId: String): Option[AnalysisResult] = {
+                analysisResultRepository.byEvaluationId(evaluationId)
+            }
+
             /**
              * Get whole graph
              */

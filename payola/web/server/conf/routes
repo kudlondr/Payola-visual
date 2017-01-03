@@ -77,6 +77,7 @@ GET     /cachestore/list            controllers.CacheStore.list(page: Int ?= 1)
 GET     /cachestore/delete/:evaluationId/:analysisId      controllers.CacheStore.delete(evaluationId, analysisId)
 GET     /cachestore/create/:id      controllers.CacheStore.create(id)
 GET     /cachestore/embed/:id       controllers.CacheStore.embed(id)
+GET     /cachestore/fetch/:id       controllers.Analysis.embeddedDetail(id)
 
 GET     /error                      controllers.ErrorHandler.error()
 GET     /404.html                   controllers.ErrorHandler.notFound()

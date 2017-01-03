@@ -22,6 +22,16 @@ import cz.payola.common.entities._
         successCallback(analyses)
     }
 
+    @async def getAnyAnalysisById(analysisId: String, user: Option[User] = null)(successCallback: (Analysis => Unit))
+        (failCallback: (Throwable => Unit)) {
+
+        val analysis = Payola.model.analysisModel.getById(analysisId).getOrElse{
+            throw new Exception("Analysis not found.")
+        }
+
+        successCallback(analysis)
+    }
+
     @async def getAnalysisById(analysisId: String, user: Option[User] = None)(successCallback: (Analysis => Unit))
         (failCallback: (Throwable => Unit)) {
 

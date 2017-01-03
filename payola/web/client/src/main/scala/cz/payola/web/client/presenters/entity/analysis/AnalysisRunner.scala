@@ -23,7 +23,8 @@ import cz.payola.web.client.util.UriHashTools
 
 /**
  * Presenter responsible for the logic around running an analysis evaluation.
- * @param elementToDrawIn ID of the element to render view into
+  *
+  * @param elementToDrawIn ID of the element to render view into
  * @param analysisId ID of the analysis which will be run
  */
 class AnalysisRunner(elementToDrawIn: String, analysisId: String) extends Presenter
@@ -49,28 +50,50 @@ class AnalysisRunner(elementToDrawIn: String, analysisId: String) extends Presen
         blockPage("Loading analysis data...")
         prefixPresenter.initialize
 
+        val uriEvaluationId = UriHashTools.getUriParameter(UriHashTools.evaluationParameter)
+
         shared.DomainData.getAnalysisById(analysisId) {
             analysis =>
-                val uriEvaluationId = UriHashTools.getUriParameter(UriHashTools.evaluationParameter)
-
                 if(uriEvaluationId != "") {
-                    shared.AnalysisRunner.evaluationExists(uriEvaluationId) {exists =>
-                            if(exists) skipEvaluationAndLoadFromCache(uriEvaluationId, analysis)
-                            else fatalErrorHandler(new PayolaException("The analysis evaluation does not exist."))}
-                    {e => fatalErrorHandler(e)}
+                    skipEvaluationAndLoadFromCache(uriEvaluationId, analysisId)
                 } else {
                     createViewAndInit(analysis)
                     unblockPage()
 
-                    if(UriHashTools.getUriParameter(UriHashTools.viewPluginParameter) != "") {
+                    if (UriHashTools.getUriParameter(UriHashTools.viewPluginParameter) != "") {
                         autorun(UriHashTools.getUriParameter(UriHashTools.viewPluginParameter))
-                    } else if(!UriHashTools.isAnyParameterInUri() && UriHashTools.getUriHash() != "") {
+                    } else if (!UriHashTools.isAnyParameterInUri() && UriHashTools.getUriHash() != "") {
                         autorun(UriHashTools.getUriHash())
                     }
                 }
         } {
             err => fatalErrorHandler(err)
         }
+    }
+
+    def initializeEmbedded() {
+        blockPage("Loading analysis data...")
+        prefixPresenter.initialize
+
+        val uriEvaluationId = UriHashTools.getUriParameter(UriHashTools.evaluationParameter)
+
+        if(uriEvaluationId == "") {
+            fatalErrorHandler(new PayolaException("The analysis evaluation does not exist."))
+        }
+
+        shared.AnalysisRunner.embeddingExistsByEvaluationId(uriEvaluationId) { embeddingExists =>
+            if (embeddingExists) {
+                //embedded is accesible for everyone
+                skipEvaluationAndLoadFromCache(uriEvaluationId, analysisId)
+            } else {
+                //evaluation is accessible only for owner
+                shared.DomainData.getAnalysisById(analysisId) { analisys =>
+                    skipEvaluationAndLoadFromCache(uriEvaluationId, analysisId)
+                } { e => fatalErrorHandler(e)
+                    //fatalErrorHandler(new PayolaException("The analysis evaluation does not exist."))
+                }
+            }
+        } { e => fatalErrorHandler(e) }
     }
 
     private def createViewAndInit(analysis: Analysis): AnalysisRunnerView = {
@@ -89,30 +112,34 @@ class AnalysisRunner(elementToDrawIn: String, analysisId: String) extends Presen
         view
     }
 
-    private def skipEvaluationAndLoadFromCache(uriEvaluationId: String, analysis: Analysis) {
-        //render analysis control page
-        val view = new AnalysisRunnerView(analysis, prefixPresenter.prefixApplier)
-        view.render(parentElement)
+    private def skipEvaluationAndLoadFromCache(uriEvaluationId: String, analysisId: String) {
+        shared.DomainData.getAnyAnalysisById(analysisId) { analysis =>
+            //render analysis control page
+            val view = new AnalysisRunnerView(analysis, prefixPresenter.prefixApplier)
+            view.render(parentElement)
 
-        successEventHandler = getSuccessEventHandler(analysis, view)
-        analysisEvaluationSuccess = new UnitEvent[Analysis, EvaluationSuccessEventArgs]
-        analysisEvaluationSuccess += successEventHandler
+            successEventHandler = getSuccessEventHandler(analysis, view)
+            analysisEvaluationSuccess = new UnitEvent[Analysis, EvaluationSuccessEventArgs]
+            analysisEvaluationSuccess += successEventHandler
 
-        view.overviewView.controls.runBtn.mouseClicked += {
-            evt => runButtonClickHandler(view, analysis)
+            view.overviewView.controls.runBtn.mouseClicked += {
+                evt => runButtonClickHandler(view, analysis)
+            }
+
+            evaluationId = uriEvaluationId
+            analysisDone = true
+            view.overviewView.controls.stopButton.setIsEnabled(false)
+            intervalHandler.foreach(window.clearInterval(_))
+
+            initReRun(view, analysis)
+            window.onunload = null
+            view.overviewView.analysisVisualizer.setAllDone()
+
+            //load all transformations and visualize the graph from cache (it is loaded from the view directly by it's transformation)
+            analysisEvaluationSuccess.trigger(new EvaluationSuccessEventArgs(analysis, TransformationManager.allTransformations))
+        } {
+            error => fatalErrorHandler(error)
         }
-
-        evaluationId = uriEvaluationId
-        analysisDone = true
-        view.overviewView.controls.stopButton.setIsEnabled(false)
-        intervalHandler.foreach(window.clearInterval(_))
-
-        initReRun(view, analysis)
-        window.onunload = null
-        view.overviewView.analysisVisualizer.setAllDone()
-
-        //load all transformations and visualize the graph from cache (it is loaded from the view directly by it's transformation)
-        analysisEvaluationSuccess.trigger(new EvaluationSuccessEventArgs(analysis, TransformationManager.allTransformations))
     }
 
     private def getSuccessEventHandler(analysis: Analysis, view: AnalysisRunnerView): (EvaluationSuccessEventArgs => Unit) = {

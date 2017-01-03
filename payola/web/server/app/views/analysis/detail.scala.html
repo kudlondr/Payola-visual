@@ -1,4 +1,4 @@
-@(user: Option[cz.payola.domain.entities.User], analysis: cz.payola.domain.entities.Analysis, canTakeOwnership: Boolean)
+@(user: Option[cz.payola.domain.entities.User], analysis: cz.payola.domain.entities.Analysis, canTakeOwnership: Boolean, embedded: Boolean = false)
 
 @main(user, "Analysis "+analysis.name+" :: Payola!") {
 <div class="container-fluid">
@@ -27,7 +27,14 @@
 </div><!--/.fluid-container-->
 
 <script src="/javaScriptPackage/cz.payola.web.client.presenters.entity.analysis.AnalysisRunner" type="text/javascript"></script>
-<script type="text/javascript">
-    new cz.payola.web.client.presenters.entity.analysis.AnalysisRunner("client-canvas", "@analysis.id").initialize();
-</script>
+@if(embedded) {
+    <script type="text/javascript">
+        new cz.payola.web.client.presenters.entity.analysis.AnalysisRunner("client-canvas", "@analysis.id").initializeEmbedded();
+    </script>
+}
+@if(!embedded) {
+    <script type="text/javascript">
+        new cz.payola.web.client.presenters.entity.analysis.AnalysisRunner("client-canvas", "@analysis.id").initialize();
+    </script>
+}
 }

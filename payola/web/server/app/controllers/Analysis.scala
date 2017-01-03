@@ -18,7 +18,23 @@ object Analysis extends PayolaController with Secured
                 tokens.split(",").contains(a.token.get)
             }.getOrElse(false)
 
-            Ok(views.html.analysis.detail(user, a, canTakeOwnership))
+            Ok(views.html.analysis.detail(user, a, canTakeOwnership, false))
+        }.getOrElse {
+            NotFound(views.html.errors.err404("The analysis does not exist."))
+        }
+    }
+
+    def embeddedDetail(id: String) = maybeAuthenticatedWithRequest { (user, request) =>
+        //strip hash params
+        val analysisId = UriHashTools.stripParams(id)
+        //search
+        Payola.model.analysisModel.getById(analysisId).map { a =>
+            val canTakeOwnership = user.isDefined && a.token.isDefined && request.session.get("analysis-tokens")
+              .map { tokens: String =>
+                  tokens.split(",").contains(a.token.get)
+              }.getOrElse(false)
+
+            Ok(views.html.analysis.detail(user, a, canTakeOwnership, true))
         }.getOrElse {
             NotFound(views.html.errors.err404("The analysis does not exist."))
         }

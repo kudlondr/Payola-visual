@@ -14,7 +14,7 @@ import cz.payola.web.client.views.bootstrap.modals.FatalErrorModal
 import cz.payola.web.shared.transformators.TripleTableTransformator
 
 abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier])
-    extends PluginView[Graph](name, prefixApplier)
+  extends PluginView[Graph](name, prefixApplier)
 {
     protected val tablePluginWrapper = new Div()
     protected val tableWrapper = new Div().setAttribute("style", "padding: 0 20px; min-height: 200px; margin:0 auto;")
@@ -86,46 +86,6 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
         jumpTextArea.maxLength = 3
         val jumpButton = new Button(new Text("Go"), "", new Icon(Icon.play))
         jumpButton.setAttribute("style", "display: inline;")
-        jumpTextArea.keyPressed += { e =>
-            if(e.keyCode == 13) {
-                jumpTextArea.hide()
-                jumpButton.hide()
-                val jumpToPageNumber = jumpTextArea.value.toInt - 1
-                if(currentPage != jumpToPageNumber) {
-                    val goingToPage = if(jumpToPageNumber >= 0 && jumpToPageNumber <= pagesCount) {
-                        jumpToPageNumber } else { currentPage }
-
-                    if(evaluationId.isDefined) {
-                        paginateToPage(goingToPage)
-                    } else {
-                        currentPage = goingToPage
-                        renderTablePage(currentGraph, currentPage)
-                        infoText.text = getPageInfoText
-                    }
-                }
-                false
-            } else {
-                true
-            }
-        }
-        jumpButton.mouseClicked += { e =>
-            jumpTextArea.hide()
-            jumpButton.hide()
-            val jumpToPageNumber = jumpTextArea.value.toInt - 1
-            if(currentPage != jumpToPageNumber) {
-                val goingToPage = if(jumpToPageNumber >= 0 && jumpToPageNumber <= pagesCount) {
-                    jumpToPageNumber } else { currentPage }
-
-                if(evaluationId.isDefined) {
-                    paginateToPage(goingToPage)
-                } else {
-                    currentPage = goingToPage
-                    renderTablePage(currentGraph, currentPage)
-                    infoText.text = getPageInfoText
-                }
-            }
-            false
-        }
 
         val jumpDiv = new Div(List(jumpTextArea, jumpButton))
         jumpDiv.hide()
@@ -153,20 +113,55 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
         val nextPageButton = new Button(new Text("Next"), "", new Icon(Icon.step_forward))
         nextPageButton.setIsEnabled(currentPage != pagesCount - 1)
 
-        setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton, currentPageButton,
-            lastPageButton, nextPageButton)
+        setUpPaginationButtons(previousPageButton, firstPageButton, middlePageButton, currentPageButton,
+            lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
 
 
+        jumpTextArea.keyPressed += { e =>
+            if(e.keyCode == 13) {
+                jumpTextArea.hide()
+                jumpButton.hide()
+                val jumpToPageNumber = jumpTextArea.value.toInt - 1
+                if(currentPage != jumpToPageNumber) {
+                    val goingToPage = if(jumpToPageNumber >= 0 && jumpToPageNumber <= pagesCount) {
+                        jumpToPageNumber } else { currentPage }
+
+                    if(evaluationId.isDefined) {
+                        paginateToPage(goingToPage)
+                    } else {
+                        paginateToPageDirectly(goingToPage, infoText, previousPageButton, firstPageButton, middlePageButton,
+                            currentPageButton, lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
+                    }
+                }
+                false
+            } else {
+                true
+            }
+        }
+        jumpButton.mouseClicked += { e =>
+            jumpTextArea.hide()
+            jumpButton.hide()
+            val jumpToPageNumber = jumpTextArea.value.toInt - 1
+            if(currentPage != jumpToPageNumber) {
+                val goingToPage = if(jumpToPageNumber >= 0 && jumpToPageNumber <= pagesCount) {
+                    jumpToPageNumber } else { currentPage }
+
+                if(evaluationId.isDefined) {
+                    paginateToPage(goingToPage)
+                } else {
+                    paginateToPageDirectly(goingToPage, infoText, previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
+                }
+            }
+            false
+        }
         previousPageButton.mouseClicked += { e =>
             if (currentPage != 0) {
                 if(evaluationId.isDefined) {
                     paginateToPage(currentPage - 1)
                 } else {
-                    currentPage -= 1
-                    renderTablePage(currentGraph, currentPage)
-                    infoText.text = getPageInfoText
-                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
-                        currentPageButton, lastPageButton, nextPageButton)
+                    paginateToPageDirectly(currentPage - 1, infoText, previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
                 }
             }
             false
@@ -176,11 +171,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                 if(evaluationId.isDefined) {
                     paginateToPage(0)
                 } else {
-                    currentPage = 0
-                    renderTablePage(currentGraph, currentPage)
-                    infoText.text = getPageInfoText
-                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
-                        currentPageButton, lastPageButton, nextPageButton)
+                    paginateToPageDirectly(0, infoText, previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
                 }
             }
             false
@@ -190,11 +182,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                 if(evaluationId.isDefined) {
                     paginateToPage(1)
                 } else {
-                    currentPage = 1
-                    renderTablePage(currentGraph, currentPage)
-                    infoText.text = getPageInfoText
-                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
-                        currentPageButton, lastPageButton, nextPageButton)
+                    paginateToPageDirectly(1, infoText, previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
                 }
             }
             false
@@ -204,11 +193,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                 if(evaluationId.isDefined) {
                     paginateToPage(pagesCount - 1)
                 } else {
-                    currentPage = pagesCount - 1
-                    renderTablePage(currentGraph, currentPage)
-                    infoText.text = getPageInfoText
-                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
-                        currentPageButton, lastPageButton, nextPageButton)
+                    paginateToPageDirectly(pagesCount - 1, infoText, previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
                 }
             }
             false
@@ -218,47 +204,40 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
                 if(evaluationId.isDefined) {
                     paginateToPage(currentPage + 1)
                 } else {
-                    currentPage += 1
-                    renderTablePage(currentGraph, currentPage)
-                    infoText.text = getPageInfoText
-                    setEnabledPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
-                        currentPageButton, lastPageButton, nextPageButton)
+                    paginateToPageDirectly(currentPage + 1, infoText, previousPageButton, firstPageButton, middlePageButton,
+                        currentPageButton, lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
                 }
             }
             false
         }
 
-        val buttonsList = if(pagesCount <= 1) {
-            List(previousPageButton, firstPageButton, nextPageButton, infoText)
-        } else if(pagesCount == 2) {
-            List(previousPageButton, firstPageButton, lastPageButton, nextPageButton, infoText)
-        } else if(pagesCount == 3) {
-            List(previousPageButton, firstPageButton, middlePageButton, lastPageButton, nextPageButton, infoText)
-        } else {
-            if(currentPage == 0 || currentPage == pagesCount - 1) {
-                List(previousPageButton, firstPageButton, jumpToPageButton1, lastPageButton, nextPageButton, infoText, jumpDiv)
-            } else if(currentPage == 1) {
-                List(previousPageButton, firstPageButton, currentPageButton, jumpToPageButton2, lastPageButton, nextPageButton, infoText, jumpDiv)
-            } else if(currentPage == pagesCount - 2) {
-                List(previousPageButton, firstPageButton, jumpToPageButton1, currentPageButton, lastPageButton, nextPageButton, infoText, jumpDiv)
-            } else {
-                List(previousPageButton, firstPageButton, jumpToPageButton1, currentPageButton, jumpToPageButton2, lastPageButton, nextPageButton, infoText, jumpDiv)
-            }
-        }
+        val buttonsList = List(previousPageButton, firstPageButton, jumpToPageButton1, currentPageButton, middlePageButton, jumpToPageButton2, lastPageButton, nextPageButton, infoText, jumpDiv)
 
         val container = new Div(buttonsList).setAttribute("style", "width:800px; margin: 0 auto;")
         container.setAttribute("style", "position: relative; left: calc(50% - 200px);")
         container
     }
 
-    private def setEnabledPaginationButtons(previousPageButton: Button, firstPageButton: Button, middlePageButton: Button,
-                                            currentPageButton: Button, lastPageButton: Button, nextPageButton: Button): Unit = {
+    private def setUpPaginationButtons(previousPageButton: Button, firstPageButton: Button, middlePageButton: Button,
+                                            currentPageButton: Button, lastPageButton: Button, nextPageButton: Button,
+                                            jumpToPageButton1: Button, jumpToPageButton2: Button): Unit = {
+
+        previousPageButton.setAttribute("style", "")
+        previousPageButton.setIsEnabled(true)
+        firstPageButton.setAttribute("style", "")
+        firstPageButton.setIsEnabled(true)
+        middlePageButton.setAttribute("style", "")
+        middlePageButton.setIsEnabled(true)
+        nextPageButton.setAttribute("style", "")
+        nextPageButton.setIsEnabled(true)
+        lastPageButton.setAttribute("style", "")
+        lastPageButton.setIsEnabled(true)
 
         if(currentPage == 0) {
             previousPageButton.setIsEnabled(false)
             firstPageButton.setIsEnabled(false)
             firstPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
-        } else if(currentPage == 1) {
+        } else if(currentPage == 1 && pagesCount == 3) {
             middlePageButton.setIsEnabled(false)
             middlePageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
         } else if(currentPage == pagesCount - 1) {
@@ -266,14 +245,50 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
             lastPageButton.setIsEnabled(false)
             lastPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
         }
-
-        currentPageButton.setIsEnabled(false)
-        currentPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
+        if(pagesCount <= 1) {
+            jumpToPageButton1.hide()
+            currentPageButton.hide()
+            middlePageButton.hide()
+            jumpToPageButton2.hide()
+            lastPageButton.hide()
+        } else if(pagesCount == 2) {
+            jumpToPageButton1.hide()
+            currentPageButton.hide()
+            middlePageButton.hide()
+            jumpToPageButton2.hide()
+        } else if(pagesCount == 3) {
+            jumpToPageButton1.hide()
+            currentPageButton.hide()
+            jumpToPageButton2.hide()
+        } else {
+            middlePageButton.hide()
+            if(currentPage == 0 || currentPage == pagesCount - 1) {
+                currentPageButton.hide()
+                jumpToPageButton2.hide()
+            } else if(currentPage == pagesCount - 2) {
+                jumpToPageButton2.hide()
+                currentPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
+            } else {
+                currentPageButton.setAttribute("style", "background-color: #428bca; opacity: 1;")
+            }
+        }
     }
 
     private def getPageInfoText: String = {
         "Showing "+currentRecordsCount+" of "+allRecordsCount+" triples"
     }
+
+    private def paginateToPageDirectly(goingToPage: Int, infoText: Text,
+                                       previousPageButton: Button, firstPageButton: Button, middlePageButton: Button,
+                                       currentPageButton: Button, lastPageButton: Button, nextPageButton: Button,
+                                       jumpToPageButton1: Button, jumpToPageButton2: Button): Unit = {
+        currentPage = goingToPage
+        renderTablePage(currentGraph, currentPage)
+        infoText.text = getPageInfoText
+        setUpPaginationButtons(previousPageButton, firstPageButton, middlePageButton,
+            currentPageButton, lastPageButton, nextPageButton, jumpToPageButton1, jumpToPageButton2)
+    }
+
 
     private def paginateToPage(goingToPage: Int) {
         if(evaluationId.isDefined) {
@@ -287,8 +302,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
     }
 
     /**
-     * @return (records on page, pages count, all records count)
-     */
+      * @return (records on page, pages count, all records count)
+      */
     def fillTable(graph: Option[Graph], tableHead: html.Element, tableBody: html.Element, pageNumber: Int): (Int, Int, Int)
 
     protected def createVertexView(vertex: IdentifiedVertex): View = {

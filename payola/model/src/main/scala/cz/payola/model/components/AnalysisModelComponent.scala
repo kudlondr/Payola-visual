@@ -30,6 +30,8 @@ trait AnalysisModelComponent extends EntityModelComponent
 
     lazy val analysisModel = new ShareableEntityModel(analysisRepository, classOf[Analysis])
     {
+        def getByIdUserLess(analysisId: String) = getById(analysisId)
+
         def addBinding(analysisId: String, sourceId: String, targetId: String, inputIndex: Int) {
             getById(analysisId).map {
                 a =>

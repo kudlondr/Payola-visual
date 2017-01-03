@@ -19,6 +19,9 @@ trait EmbeddingDescriptionModelComponent
             def getEmbedded(analysisResultId: String): Option[EmbeddingDescription] =
                 embeddingDescriptionRepository.getEmbeddedUriHash(analysisResultId)
 
+            def embeddingExistsByResultId(evalId: String): Boolean =
+                embeddingDescriptionRepository.embeddingExistsByResultId(evalId)
+
             def getEmbeddedAnalysisResult(uriHash: String): Option[(AnalysisResult, EmbeddingDescription)] = {
                 val embeddedOpt = embeddingDescriptionRepository.getEmbeddedByUriHash(uriHash)
 

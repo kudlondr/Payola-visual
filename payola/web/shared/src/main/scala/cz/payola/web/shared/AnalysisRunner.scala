@@ -65,10 +65,18 @@ import cz.payola.common.EvaluationSuccess
         successCallback(Payola.model.embeddingDescriptionModel.exists(embedId))
     }
 
+    @async def embeddingExistsByEvaluationId(evaluationId: String, user: Option[User] = None)(successCallback: (Boolean => Unit))
+                              (failCallback: (Throwable => Unit)) {
+        val analysisResult = Payola.model.analysisResultStorageModel.byEvaluationId(evaluationId)
+        println("is defined: "+analysisResult.isDefined)
+        successCallback(analysisResult.isDefined && Payola.model.embeddingDescriptionModel.embeddingExistsByResultId(analysisResult.get.id))
+    }
+
 
     /**
      * Partial analysis remote proxy
-     * @param analysisId Analysis to make partial from
+      *
+      * @param analysisId Analysis to make partial from
      * @param pluginInstanceId Plugin instance which makes the cutting point of the analysis
      * @param limitCount Limit plugin parameter value
      * @param user owner
