@@ -24,10 +24,15 @@ object GraphDownloader extends PayolaController with Secured
 
     private def downloadAnalysisEvaluationResultAs(analysisID: String, evaluationID: String,
         format: RdfRepresentation.Type, u: Option[User]): Result = {
-        val success = getAnalysisSuccessForEvaluationID(evaluationID, u)
+        val success: Option[Graph] = try {
+            val succ = getAnalysisSuccessForEvaluationID(evaluationID, u)
+            succ.map(_.outputGraph)
+        } catch {
+            case _ => Some(Payola.model.analysisResultStorageModel.getGraph(evaluationID))
+        }
         val analysis = Payola.model.analysisModel.getAccessibleToUserById(u, analysisID)
         if (success.isDefined && analysis.isDefined) {
-            val graph = success.get.outputGraph
+            val graph = success.get
 
             val mimeType = format match {
                 case RdfRepresentation.RdfXml => "application/rdf+xml"

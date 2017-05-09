@@ -5,6 +5,7 @@ import cz.payola.common.Entity
 trait EmbeddingDescription extends Entity with OptionallyOwnedEntity with NamedEntity {
     protected var urihash: String
     protected var defaultvisualplugin: Option[String]
+    protected var defaultcustomization: Option[String]
     protected var analysisresultid: String
     protected var evaluationid: String = ""
 
@@ -22,6 +23,12 @@ trait EmbeddingDescription extends Entity with OptionallyOwnedEntity with NamedE
 
     def defaultVisualPlugin_=(value: Option[String]) {
         defaultvisualplugin = value
+    }
+
+    def defaultCustomization = defaultcustomization
+
+    def defaultCustomization_=(value: Option[String]) {
+        defaultcustomization = value
     }
 
     def analysisResultId = analysisresultid

@@ -2,11 +2,9 @@ package cz.payola.model.components
 
 import cz.payola.domain.RdfStorageComponent
 import cz.payola.domain.entities.User
-import cz.payola.common.rdf._
 import cz.payola.domain.entities.AnalysisResult
 import cz.payola.data.DataContextComponent
 import cz.payola.domain.entities.plugins.concrete.data.PayolaStorage
-import cz.payola.common.rdf.Graph
 import java.io._
 import scala.actors.Futures._
 
@@ -15,6 +13,7 @@ import com.hp.hpl.jena.rdf.model._
 import org.apache.jena.riot._
 import org.apache.jena.riot.lang._
 import cz.payola.domain.rdf._
+import cz.payola.domain.rdf.Graph
 
 trait AnalysisResultStorageModelComponent
 {
@@ -35,7 +34,7 @@ trait AnalysisResultStorageModelComponent
                     .filterNot(_.startsWith("http://schema.org"))
             }
             
-            def saveGraph(graph: Graph, analysisId: String, evaluationId: String, user: Option[User] = None,
+            def saveGraph(graph: cz.payola.common.rdf.Graph, analysisId: String, evaluationId: String, user: Option[User] = None,
                 embeddedHash: Option[String] = None) {
 
                 //store control in DB

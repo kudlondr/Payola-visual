@@ -182,11 +182,18 @@ class AnalysisRunner(elementToDrawIn: String, analysisId: String) extends Presen
             UriHashTools.getUriHash()
         } else { UriHashTools.getUriParameter(UriHashTools.viewPluginParameter) }
 
+        val customization = if(!UriHashTools.isAnyParameterInUri() && UriHashTools.getUriHash() != "") {
+            UriHashTools.getUriHash()
+        } else { UriHashTools.getUriParameter(UriHashTools.customizationParameter) }
+
+        //TODO get selected customization if any and apply it
+
         getAnalysisEvaluationID.foreach(UriHashTools.setUriParameter(UriHashTools.evaluationParameter, _)) //this changes the UriHash
 
         graphPresenter = new GraphPresenter(view.resultsView.htmlElement, prefixPresenter.prefixApplier, getAnalysisEvaluationID)
         graphPresenter.initialize()
         graphPresenter.view.setAvailablePlugins(succEvent.availableTransformators, viewPlugin)
+        graphPresenter.view.setInitialCustomization(customization)
 
         graphPresenter.view.vertexBrowsing += onVertexBrowsing
     }

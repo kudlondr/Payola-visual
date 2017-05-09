@@ -20,7 +20,7 @@ trait EmbeddingDescriptionRepositoryComponent extends TableRepositoryComponent {
         def createEmbeddedUriHash(analysisResult: AnalysisResult): EmbeddingDescription = {
             wrapInTransaction{
                 val embeddedUri = new EmbeddingDescription(analysisResult.owner.map(User(_)),
-                    IDGenerator.newId, None, analysisResult.id, new java.sql.Timestamp(System.currentTimeMillis))
+                    IDGenerator.newId, None, None, analysisResult.id, new java.sql.Timestamp(System.currentTimeMillis))
 
                 persist(embeddedUri)
                 embeddedUri
@@ -55,6 +55,16 @@ trait EmbeddingDescriptionRepositoryComponent extends TableRepositoryComponent {
             val embeddingDescription = getById(id)
             if(embeddingDescription.isDefined) {
                 embeddingDescription.get.defaultVisualPlugin = Some(visualPlugin)
+                persist(embeddingDescription.get)
+            }
+
+            embeddingDescription
+        }
+
+        def setCustomization(id: String, customization: String): Option[EmbeddingDescription] = {
+            val embeddingDescription = getById(id)
+            if(embeddingDescription.isDefined) {
+                embeddingDescription.get.defaultCustomization = Some(customization)
                 persist(embeddingDescription.get)
             }
 

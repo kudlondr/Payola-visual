@@ -49,6 +49,7 @@
         buffer += <td>Result Url</td>
         buffer += <td>Embeded Url</td>
         buffer += <td>Default visual plugin</td>
+        buffer += <td>Default customization</td>
         buffer += <td>Actions</td>
 
         buffer
@@ -82,17 +83,28 @@
             }
 
         }</td>
-        <td id={"result"+aRes.id}>{
+        <td style="width:160px" id={"result_plug"+aRes.id}>{
             if(aRes.embeddingDescription.isDefined) {
                 <script src="/javaScriptPackage/cz.payola.web.client.presenters.entity.cachestore.CacheStorePresenter" type="text/javascript"></script>
                 <script type="text/javascript">
                     new cz.payola.web.client.presenters.entity.cachestore.CacheStorePresenter(
-                        document.getElementById('{"result"+aRes.id}'), '{aRes.embeddingDescription.get.id}',
-                        '{aRes.embeddingDescription.get.defaultVisualPlugin.getOrElse("")}').initialize();
+                        document.getElementById('{"result_plug"+aRes.id}'), '{aRes.embeddingDescription.get.id}',
+                        '{aRes.embeddingDescription.get.defaultVisualPlugin.getOrElse("")}',
+                        '{aRes.embeddingDescription.get.defaultCustomization.getOrElse("")}').initializeAvailablePlugins();
                 </script>
             }
         }</td>
-        <td class="listing-column-tiny">
+        <td style="width:160px" id={"result_cust"+aRes.id}>{
+            if(aRes.embeddingDescription.isDefined) {
+            <script type="text/javascript">
+                new cz.payola.web.client.presenters.entity.cachestore.CacheStorePresenter(
+                    document.getElementById('{"result_cust"+aRes.id}'), '{aRes.embeddingDescription.get.id}',
+                    '{aRes.embeddingDescription.get.defaultVisualPlugin.getOrElse("")}',
+                    '{aRes.embeddingDescription.get.defaultCustomization.getOrElse("")}').initializeAvailableCustomizations();
+            </script>
+            }
+            }</td>
+        <td style="width:100px">
             <div class="btn-toolbar">{
                 if(aRes.embeddingDescription.isDefined) {
                     updateLinkForID(aRes.analysis.get.id, aRes.evaluationId, aRes.embeddingDescription.get.uriHash) ++ deleteLinkForID(aRes.evaluationId, aRes.analysis.get.id)

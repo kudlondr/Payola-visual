@@ -5,53 +5,51 @@
 
     <form action="@routes.Application.register" class="form-horizontal" method="post">
 
-    <div class="hero-unit well">
-        <h1>Sign up</h1>
-        <p>Would you like to browse your own Linked Data with our app? Want to collaborate on you data with other Payola
-        users? All you need is to sign up! It is simple, just enter your e-mail and choose a password.</p>
-        <p><a href="https://github.com/kudlondr/Payola-visual" class="btn btn-primary">Learn more about Payola</a></p>
-    </div>
+        <div class="hero-unit well">
+            <h1>Sign up</h1>
+            <p>Would you like to browse your own Linked Data with our app? Want to collaborate on you data with other Payola
+            users? All you need is to sign up! It is simple, just enter your e-mail and choose a password.</p>
+            <p><a href="https://github.com/kudlondr/Payola-visual" class="btn btn-primary">Learn more about Payola</a></p>
+        </div>
 
-    @form.globalError.map { error =>
-    <p class="alert alert-error">
-        @error.message
-    </p>
-    }
+        @form.globalError.map { error =>
+        <p class="alert alert-error">
+            @error.message
+        </p>
+        }
 
-    @flash.get("success").map { message =>
-    <p class="alert alert-success">
-        @message
-    </p>
-    }
+        @flash.get("success").map { message =>
+        <p class="alert alert-success">
+            @message
+        </p>
+        }
 
-    @flash.get("error").map { message =>
-    <p class="alert alert-danger">
-        @message
-    </p>
-    }
+        @flash.get("error").map { message =>
+        <p class="alert alert-danger">
+            @message
+        </p>
+        }
 
-    <div class="well">
-        <fieldset>
-            <legend>Sign up to Payola</legend>
-            <div class="control-group">
-                <label class="control-label" for="email">Email</label>
-                <div class="controls">
-                    <input type="email" name="email" placeholder="Email" id="email" value="@form("email").value" class="input-large">
-                </div>
+        <div class="well row">
+            <div class="col-lg-4">
+                <fieldset>
+                    <legend>Sign up to Payola</legend>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" class="form-control" placeholder="Email" id="email" value="@form("email").value" />
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+                    </div>
+                    <div>
+                        <span class="controls">
+                            <button type="submit" id="loginbutton" class="input btn btn-primary">Sign up</button>
+                        </span>
+                    </div>
+                </fieldset>
             </div>
-            <div class="control-group">
-                <label class="control-label" for="password">Password</label>
-                <div class="controls">
-                    <input type="password" name="password" id="password" placeholder="Password" class="input-large">
-                </div>
-            </div>
-            <div>
-                <span class="controls">
-                    <button type="submit" id="loginbutton" class="input btn btn-primary">Sign up</button>
-                </span>
-            </div>
-        </fieldset>
-    </div>
+        </div>
 
     </form>
 

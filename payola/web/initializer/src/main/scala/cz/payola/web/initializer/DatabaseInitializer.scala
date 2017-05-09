@@ -218,7 +218,7 @@ object DatabaseInitializer extends App
         manyTendersPersisted.addBinding(contractFilter, contractTitlePropertySelection)
 
         // Persist the ontology customizations with some default colors and strokes.
-        val urls = List("http://opendata.cz/pco/public-contracts.xml")
+        /*val urls = List("http://opendata.cz/pco/public-contracts.xml")
         val customization = OntologyCustomization.empty(urls, "Public contracts", Some(admin))
         customization.isPublic = true;
 
@@ -233,7 +233,7 @@ object DatabaseInitializer extends App
                 propCustomization.strokeColor = propertySettings._2._1
                 propCustomization.strokeWidth = propertySettings._2._2
             }
-        }
+        }*/
 
 
         val populatedCities = new cz.payola.domain.entities.Analysis("Populated cities", Some(admin))
@@ -254,7 +254,7 @@ object DatabaseInitializer extends App
 
 
 
-        model.customizationRepository.persist(customization)
+        //model.customizationRepository.persist(customization)
     }
 
     /*

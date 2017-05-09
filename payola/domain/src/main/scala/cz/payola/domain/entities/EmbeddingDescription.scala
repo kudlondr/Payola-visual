@@ -7,6 +7,7 @@ class EmbeddingDescription(
     protected override var _owner: Option[User],
     protected override var urihash: String,
     protected override var defaultvisualplugin: Option[String],
+    protected override var defaultcustomization: Option[String],
     protected override var analysisresultid: String,
     protected var lastupdate: Timestamp,
     protected override var _name: String = "")

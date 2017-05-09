@@ -28,7 +28,6 @@ object Customization extends EntityConverter[Customization]
                     customizations, o.isPublic))
             }
             case o: cz.payola.common.entities.settings.UserCustomization => {
-
                 val customizations = o.classCustomizations.map(ClassCustomization(_))
 
                 val res = new Customization(

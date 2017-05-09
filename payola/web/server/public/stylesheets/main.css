@@ -130,6 +130,12 @@ input.active, textarea.active, .cacheUpdateButton {
     background-position: 98%;
 }
 
+.cacheCustomizationLoad {
+    background: url('spinner.gif') no-repeat 100%;
+    background-color: transparent;
+    background-position: 98%;
+}
+
 input[type="checkbox"].active:after {
     width: 20px;
     height: 20px;

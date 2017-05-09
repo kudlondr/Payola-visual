@@ -410,7 +410,7 @@ trait SchemaComponent
                 new AnalysisResult("", None, "", 0, new java.sql.Timestamp(System.currentTimeMillis()))
             },
             factoryFor(embeddingDescription) is {
-                new EmbeddingDescription(None, "", None, "", new java.sql.Timestamp(System.currentTimeMillis()))
+                new EmbeddingDescription(None, "", None, None, "", new java.sql.Timestamp(System.currentTimeMillis()))
             }
         )
 

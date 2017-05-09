@@ -25,6 +25,10 @@ class UserCustomizationsByOwnership(
 class CustomizationByOwnership(
     val ontologyCustomizations: OntologyCustomizationsByOwnership, val userCustomizations: UserCustomizationsByOwnership)
 
+class PublicCustomizations(
+    val ontologyCustomizations: Seq[cz.payola.common.entities.settings.OntologyCustomization],
+    val userCustomizations: Seq[cz.payola.common.entities.settings.UserCustomization])
+
 @remote
 @secured object CustomizationManager
     extends ShareableEntityManager[Customization, cz.payola.common.entities.settings.Customization](
@@ -52,6 +56,16 @@ class CustomizationByOwnership(
 
         successCallback(new UserCustomizationsByOwnership(
             Some(ownedUser.map{_.convertToUserCustomization()}), othersUser.map{_.convertToUserCustomization()}))
+    }
+
+    @async def getPublicCustomizations(user: Option[User] = null)
+        (successCallback: PublicCustomizations => Unit)
+        (failCallback: Throwable => Unit) {
+
+        val accessibleOntoCusts = Payola.model.ontologyCustomizationModel.getAccessibleToUser(user).filter{ cust => !cust.isUserDefined && cust.owner != user}
+        val accessibleUserCusts = Payola.model.ontologyCustomizationModel.getAccessibleToUser(user).filter{ cust => cust.isUserDefined && cust.owner == user}
+
+        successCallback(new PublicCustomizations(accessibleOntoCusts.map{_.convertToOntologyCustomization()}, accessibleUserCusts.map{_.convertToUserCustomization()}))
     }
 
     @async def getCustomizationsByOwnership(user: Option[User] = null)
@@ -184,6 +198,22 @@ class CustomizationByOwnership(
         }
 
         failCallback(new RpcException("No such customization found!"))
+    }
+
+    @async @secured def getCustomizationNameByID(id: String, user: User = null)
+        (successCallback: String => Unit)
+        (failCallback: Throwable => Unit) {
+
+        val ontologyCust = Payola.model.ontologyCustomizationModel.getAccessibleCustomizationsToUserById(Some(user), id)
+        val userCust = Payola.model.userCustomizationModel.getAccessibleCustomizationsToUserById(Some(user), id)
+
+        if(ontologyCust.isDefined) {
+            successCallback(ontologyCust.get.name)
+        } else if(userCust.isDefined) {
+            successCallback(userCust.get.name)
+        } else {
+            successCallback("")
+        }
     }
 
     @async @secured def getOntologyCustomizationByID(id: String, user: User = null)

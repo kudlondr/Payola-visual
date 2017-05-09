@@ -7,7 +7,6 @@ import cz.payola.domain.entities.User
 
 @remote object EmbeddingDescriptionManager
 {
-
     @async def wft (successCallback: Boolean => Unit)(errorCallback: Throwable => Unit) {
         successCallback(true)
     }
@@ -16,5 +15,11 @@ import cz.payola.domain.entities.User
         (successCallback: Boolean => Unit)(errorCallback: Throwable => Unit) {
 
         successCallback(Payola.model.embeddingDescriptionModel.setViewPlugin(id, visualPlugin).isDefined)
+    }
+
+    @async def setCustomization(id: String, customization: String)
+        (successCallback: Boolean => Unit)(errorCallback: Throwable => Unit) {
+
+        successCallback(Payola.model.embeddingDescriptionModel.setCustomization(id, customization).isDefined)
     }
 }

@@ -7,6 +7,7 @@ import cz.payola.common.entities.settings._
 import cz.payola.web.client.events.SimpleUnitEvent
 import scala.collection.mutable
 import scala.Some
+import s2js.compiler.javascript
 
 /**
  * Model object which contains calls to the remote objects on server. Most of the calls are provided with caching
@@ -78,7 +79,6 @@ object Model
 
     def ontologyCustomizationsByOwnership(successCallback: OntologyCustomizationsByOwnership => Unit)
         (errorCallback: Throwable => Unit) {
-
         fetchOntologyCustomizations { () =>
             successCallback(new OntologyCustomizationsByOwnership(
                 _ownedOntologyCustomizations,
@@ -212,27 +212,35 @@ object Model
         }
     }
 
+    @javascript("console.log(target);")
+    private def writeln(target: String) { }
+
     def customizationsByOwnership(successCallback: (OntologyCustomizationsByOwnership, UserCustomizationsByOwnership) => Unit)
         (errorCallback: Throwable => Unit) {
-
+        writeln("customizationsByOwnership")
         if (!_ontologyCustomizationsAreLoaded || !_userCustomizationsAreLoaded) {
             CustomizationManager.getCustomizationsByOwnership() { customizations =>
+                writeln("ontology")
                 customizations.ontologyCustomizations.ownedCustomizations.foreach { owned =>
                     val c = mutable.ListBuffer.empty[OntologyCustomization]
                     owned.foreach(c += _)
                     _ownedOntologyCustomizations = Some(c)
                 }
+                writeln("other")
                 _othersOntologyCustomizations = customizations.ontologyCustomizations.othersCustomizations
                 _ontologyCustomizationsAreLoaded = true
 
+                writeln("usercust")
                 customizations.userCustomizations.ownedCustomizations.foreach { owned =>
                     val c = mutable.ListBuffer.empty[UserCustomization]
                     owned.foreach(c += _)
                     _ownedUserCustomizations = Some(c)
                 }
+                writeln("other")
                 _othersUserCustomizations = customizations.userCustomizations.othersCustomizations
                 _userCustomizationsAreLoaded = true
 
+                writeln("success")
                 successCallback(
                     new OntologyCustomizationsByOwnership(_ownedOntologyCustomizations, _othersOntologyCustomizations),
                     new UserCustomizationsByOwnership(_ownedUserCustomizations, _othersUserCustomizations))

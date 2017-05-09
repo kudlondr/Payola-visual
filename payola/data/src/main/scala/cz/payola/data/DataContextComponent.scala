@@ -372,6 +372,8 @@ trait DataContextComponent
 
         def setViewPlugin(id: String, visualPlugin: String): Option[EmbeddingDescription]
 
+        def setCustomization(id: String, customization: String): Option[EmbeddingDescription]
+
         def updateEvaluation(uriHash: String, analysisResultId: String)
     }
 

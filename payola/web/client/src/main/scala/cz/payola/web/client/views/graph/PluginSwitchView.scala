@@ -25,8 +25,8 @@ import cz.payola.web.client.views.d3.packLayout._
 import cz.payola.web.client.views.datacube.DataCubeVisualizer
 import cz.payola.web.client.views
 
-class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[String] = None, analysisId: Option[String]) extends GraphView with ComposedView
-{
+class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[String] = None, analysisId: Option[String])
+  extends GraphView with ComposedView {
     /**
      * Event triggered when ontology customization is created.
      */
@@ -202,6 +202,10 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
     override def setLanguage(language: Option[String]) {}
 
 
+    def setInitialCustomization(prefferedCustomization: String): Unit = {
+        performClickById(prefferedCustomization)
+    }
+
     /**
      * Updates the list of ontology customizations showed in the ontologyCustomizationButton drop-down button.
      * @param customizations customizations to set to the drop-down button
@@ -296,6 +300,7 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
         val editButton = new Button(new Text("Edit"), "btn-mini", new Icon(Icon.pencil)).setAttribute(
             "style", "position: absolute; right: 5px;")
         val anchor = new Anchor(List(new Text(customization.name)) ++ (if (isEditable) List(editButton) else Nil))
+        anchor.setAttribute("id", customization.id)
         anchor.setAttribute("style", "line-height:34px;")
 
         val listItem = new ListItem(List(anchor))
@@ -322,6 +327,7 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
         val editButton = new Button(new Text("Edit"), "btn-mini", new Icon(Icon.pencil)).setAttribute(
             "style", "position: absolute; right: 5px;")
         val anchor = new Anchor(List(new Text(customization.name)) ++ (if (isEditable) List(editButton) else Nil))
+        anchor.setAttribute("id", customization.id)
         anchor.setAttribute("style", "line-height:34px;")
 
         val listItem = new ListItem(List(anchor))
@@ -458,7 +464,7 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
             plugins.foreach{ plugin =>
                 plugin.isAvailable(availableTransformations, evaluationId.get, { () =>
                     if(normalizeClassName(plugin.getClass.getName) == preferredPlugin) {
-                        autoSwitchPlugin(normalizeClassName(plugin.getClass.getName))
+                        performClickByClass(normalizeClassName(plugin.getClass.getName))
                     }
                 }, { () =>
                     pluginChangeButton.items.find(_.subViews(0).asInstanceOf[Anchor].subViews(0).asInstanceOf[Text].text == plugin.name).map(
@@ -483,9 +489,16 @@ class PluginSwitchView(prefixApplier: PrefixApplier, startEvaluationId: Option[S
     }
 
     @javascript("""
-          if (normalizedPluginName.length > 0){
-            jQuery(".dropdown-menu ."+normalizedPluginName+" a").click();
+          if (elementClass.length > 0){
+            jQuery(".dropdown-menu ."+elementClass+" a").click();
           }
                 """)
-    private def autoSwitchPlugin(normalizedPluginName: String) {}
+    private def performClickByClass(elementClass: String) {}
+
+    @javascript("""
+          if (elementId.length > 0){
+            jQuery("#"+elementId).click();
+          }
+                """)
+    private def performClickById(elementId: String) {}
 }

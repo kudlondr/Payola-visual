@@ -71,14 +71,25 @@ object CacheStore extends PayolaController with Secured
         val analysisResult = Payola.model.embeddingDescriptionModel.getEmbeddedAnalysisResult(uriHash)
         if(analysisResult.isDefined) {
 
-            val parameters =
-                if(analysisResult.get._2.defaultVisualPlugin.isDefined && analysisResult.get._2.defaultVisualPlugin != "") {
-                    "viewPlugin="+analysisResult.get._2.defaultVisualPlugin.get+"&evaluation="+analysisResult.get._1.evaluationId
+            val customizationParam =
+                if(analysisResult.get._2.defaultCustomization.isDefined && analysisResult.get._2.defaultCustomization != "") {
+                    "customization=" + analysisResult.get._2.defaultCustomization.get
                 } else {
-                    "evaluation="+analysisResult.get._1.evaluationId
+                    ""
                 }
-            Redirect(routes.Analysis.embeddedDetail(analysisResult.get._1.analysisId+"#"+parameters))/*,
-                Some(analysisResult.get._1.evaluationId), analysisResult.get._2.defaultVisualPlugin))*/
+            val pluginParam =
+                if(analysisResult.get._2.defaultVisualPlugin.isDefined && analysisResult.get._2.defaultVisualPlugin != "") {
+                    "viewPlugin=" + analysisResult.get._2.defaultVisualPlugin.get
+                } else {
+                    ""
+                }
+            val evalParam = "evaluation="+analysisResult.get._1.evaluationId
+
+            val parameters =
+                customizationParam + (if(customizationParam.isEmpty) { "" } else { "&" }) +
+                pluginParam + (if(pluginParam.isEmpty) { "" } else { "&" }) + evalParam
+
+            Redirect(routes.Analysis.embeddedDetail(analysisResult.get._1.analysisId+"#"+parameters))
         } else {
             NotFound("The embedded analysis result does not exist.")
         }

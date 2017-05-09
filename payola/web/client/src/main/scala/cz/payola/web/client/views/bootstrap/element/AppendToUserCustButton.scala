@@ -5,6 +5,7 @@ import cz.payola.web.client.views.elements.form.fields.TextInput
 import cz.payola.web.client.views.elements.form.Label
 import cz.payola.web.client.views.ComposedView
 import cz.payola.web.client.models.PrefixApplier
+import s2js.compiler.javascript
 
 class AppendToUserCustButton (var availableValues: Seq[String], buttonLabel: String, buttonTitle: String,
     listHeader: String, listTitle: String, cssClass: String = "",
@@ -14,7 +15,11 @@ class AppendToUserCustButton (var availableValues: Seq[String], buttonLabel: Str
     private val heading = new Heading(List(new Text(listTitle))).setAttribute(
         "style", "padding-top: 5px; padding-bottom: 5px;")
 
-    private val inputField = new TextInput("name", "", "Input custom", "col-lg-6").setAttribute("style", "width: 500px;")
+    private val inputField : TextInput = new TextInput("name", "", "Input custom", "col-lg-6").setAttribute("style", "width: 500px;")
+    inputField.keyReleased += { e =>
+        hideOtherOnCustomInput(inputField.value, valuesDivId)
+        true
+    }
 
     private val addButton = new Button(new Text("Add"))
     addButton.mouseClicked += { e =>
@@ -32,12 +37,13 @@ class AppendToUserCustButton (var availableValues: Seq[String], buttonLabel: Str
         new Div(List(closeButton, new Heading(List(new Text(listHeader)))), "modal-header"),
         new Label(customLabel, inputField.formHtmlElement, ""), inputField, addButton))
 
+    private val valuesDivId = "valuesContainerDiv"+buttonLabel
     private val valuesDiv = new Div(
         availableValues.map{ newClass => //list of classes available in the current graph
 
             val availableClassAnch = new Div(List(
                 new Anchor(List(new Div(List(new Text(uriToName(newClass))),
-                    "label label-info"))))).setAttribute("style", "padding-top: 5px;")
+                    "label label-info")))))
 
             availableClassAnch.mouseClicked += { e =>
                 closePopup()
@@ -47,7 +53,7 @@ class AppendToUserCustButton (var availableValues: Seq[String], buttonLabel: Str
                 false
             }
             availableClassAnch
-        }).setAttribute("style", "overflow: auto; height: 280px;")
+        }).setAttribute("style", "overflow: auto; height: 280px;").setAttribute("id", valuesDivId)
 
     private val classDiv = new Div(List(classNameInput, heading, valuesDiv),"append-popup dropdown-menu").setAttribute(
         "style","position: fixed !important; left: 50% !important; top: 50% !important;"+
@@ -72,4 +78,17 @@ class AppendToUserCustButton (var availableValues: Seq[String], buttonLabel: Str
         val nameParts = uri.split("#")
         if(prefxedUri == uri) {if (nameParts.length > 1) { nameParts(1) } else { uri } } else prefxedUri
     }
+
+    @javascript("""
+        var upperCasedInput = inputValue.toUpperCase();
+        var valuesDivElement = document.getElementById(valuesDivId);
+        for(i = 0; i < valuesDivElement.children.length; i++) {
+            if(valuesDivElement.children[i].children[0].children[0].textContent.toUpperCase().contains(upperCasedInput)) {
+                valuesDivElement.children[i].setAttribute('style', '');
+            } else {
+                valuesDivElement.children[i].setAttribute('style', 'display: none');
+            }
+        }
+      """)
+    private def hideOtherOnCustomInput(inputValue: String, valuesDivId: String) { }
 }

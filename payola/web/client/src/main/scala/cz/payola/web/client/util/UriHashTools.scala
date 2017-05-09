@@ -8,7 +8,7 @@ object UriHashTools
     val viewPluginParameter = "viewPlugin"
     val evaluationParameter = "evaluation"
     val embeddingUpdateParameter = "embUpdate"
-    val customizationParameter = "cust"
+    val customizationParameter = "customization"
 
     @javascript("""
           if (window.location.hash){

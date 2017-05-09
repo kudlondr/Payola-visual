@@ -68,7 +68,6 @@ import cz.payola.common.EvaluationSuccess
     @async def embeddingExistsByEvaluationId(evaluationId: String, user: Option[User] = None)(successCallback: (Boolean => Unit))
                               (failCallback: (Throwable => Unit)) {
         val analysisResult = Payola.model.analysisResultStorageModel.byEvaluationId(evaluationId)
-        println("is defined: "+analysisResult.isDefined)
         successCallback(analysisResult.isDefined && Payola.model.embeddingDescriptionModel.embeddingExistsByResultId(analysisResult.get.id))
     }
 

@@ -8,11 +8,10 @@ import s2js.adapters.browser._
 import scala.Some
 import s2js.adapters.html
 
-class PrivateDataUploaderView(fileUploaderDivID: String,
-    urlUploaderDivID: String) extends ComposedView
-{
+class PrivateDataUploaderView(fileUploaderDivID: String, urlUploaderDivID: String) extends ComposedView {
+
     val fileUploadDiv = document.getElementById(fileUploaderDivID)
-    val fileInput = new InputControl("File: ", new FileInput("graphFile", "", "col-lg-10"), Some("col-lg-10"), Some("col-lg-2"))
+    val fileInput = new InputControl("File: ", new FileInput("graphFile", "", "col-lg-2"), Some("col-lg-2"), Some("col-lg-10"))
     val fileUploadButton = new Button(new Text(" Upload File"), "btn-primary input", new Icon(Icon.upload, true))
 
     val urlUploadDiv = document.getElementById(urlUploaderDivID)
@@ -24,6 +23,7 @@ class PrivateDataUploaderView(fileUploaderDivID: String,
     }
 
     override def render(parent: html.Element) {
+        fileInput.controlGroup.setAttribute("style", "height: 22px;")
         fileInput.render(fileUploadDiv)
         fileUploadButton.render(fileUploadDiv)
         urlField.render(urlUploadDiv)

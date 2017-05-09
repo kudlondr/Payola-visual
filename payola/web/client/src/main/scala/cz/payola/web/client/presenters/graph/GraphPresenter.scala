@@ -13,6 +13,7 @@ import cz.payola.web.client.presenters.entity.settings._
 import cz.payola.common.rdf.IdentifiedVertex
 import cz.payola.web.client.presenters.entity.PrefixPresenter
 import cz.payola.web.client.util.UriHashTools
+import s2js.compiler.javascript
 
 class GraphPresenter(val viewElement: html.Element, prefixApplier: PrefixApplier, startEvaluationId: Option[String] = None, analysisId: Option[String] = None) extends Presenter
 {

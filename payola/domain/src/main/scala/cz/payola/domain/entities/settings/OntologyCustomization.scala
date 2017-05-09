@@ -21,7 +21,6 @@ object OntologyCustomization
              val classCustomizations = ontologyURLs.map{ url =>
                  val ontology = Ontology(new Downloader(url, accept = "application/rdf+xml").result)
 
-
                  ontology.classes.values.map { c =>
                      val propertyCustomizations = c.properties.values.map { p =>
                          new PropertyCustomization(p.uri, "", 0)

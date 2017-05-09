@@ -33,10 +33,12 @@ trait CustomizationRepositoryComponent extends TableRepositoryComponent
                     case c: cz.payola.common.entities.settings.Customization => {
                         getById(c.id)
                     }
-                    case _ => None
+                    case _ => {
+                        None
+                    }
                 }
 
-                val persistedCustomization = inDbCustOpt.getOrElse(super.persist(convertedEntity) )
+                val persistedCustomization = super.persist(convertedEntity)
 
                 convertedEntity match {
                     //case o: Customization =>

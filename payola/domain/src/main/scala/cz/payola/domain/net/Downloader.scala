@@ -40,18 +40,24 @@ class Downloader(val url: String, val accept: String = "", val encoding: String 
      */
     def getSecuredResult : Option[String] = {
         credentials.map { c =>
+            println("ready")
             val creds = new UsernamePasswordCredentials(c._1, c._2)
+            println("credentials prepared")
             val httpclient = new DefaultHttpClient()
             val get = new HttpGet(url)
             get.addHeader("X-Requested-Auth", "Digest")
             get.addHeader("Accept", accept)
+            println("ready to fetch")
             try {
                 httpclient.getCredentialsProvider().setCredentials(AuthScope.ANY, creds)
                 val response = httpclient.execute(get)
+                println("got response")
                 val content = IOUtils.toString(response.getEntity().getContent(), "UTF-8")
+                println("formatted")
                 content
             } finally {
                 httpclient.getConnectionManager().shutdown()
+                println("stream closed")
             }
         }
     }
@@ -63,7 +69,9 @@ class Downloader(val url: String, val accept: String = "", val encoding: String 
         val inputStream = connection.getInputStream
         val result = Some(Source.fromInputStream(inputStream, encoding).mkString)
 
+        println("stream read")
         inputStream.close()
+        println("stream closed")
         result
     }
 }

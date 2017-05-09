@@ -2,6 +2,7 @@ package cz.payola.web.client.views.graph.table
 
 import s2js.adapters.browser._
 import s2js.adapters.html
+import s2js.compiler.javascript
 import cz.payola.common.rdf._
 import cz.payola.web.client.View
 import cz.payola.web.client.views.VertexEventArgs
@@ -12,6 +13,7 @@ import cz.payola.web.client.models.PrefixApplier
 import form.fields.TextInput
 import cz.payola.web.client.views.bootstrap.modals.FatalErrorModal
 import cz.payola.web.shared.transformators.TripleTableTransformator
+
 
 abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier])
   extends PluginView[Graph](name, prefixApplier)
@@ -24,6 +26,8 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
     private var pagesCount = 0
     private var allRecordsCount = 0
     private var currentRecordsCount = 0
+
+    private val currentPageText = new Text("")
 
     def createSubViews = List(tablePluginWrapper)
 
@@ -74,10 +78,10 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
 
         val firstPageButton = new Button(new Text("1"), "")
 
-        val middlePageButton = new Button(new Text("2"), "")
+        val middlePageButton = new Button(new Text("2"), "") //visible if there are only 3 pages
 
-        val currentPageValue = currentPage + 1
-        val currentPageButton = new Button(new Text(currentPageValue.toString), "")
+        currentPageText.text = (currentPage + 1).toString
+        val currentPageButton = new Button(currentPageText, "")
 
         val lastPageButton = new Button(new Text(pagesCount.toString), "")
 
@@ -226,12 +230,15 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
         previousPageButton.setIsEnabled(true)
         firstPageButton.setAttribute("style", "")
         firstPageButton.setIsEnabled(true)
+        jumpToPageButton1.setAttribute("style", "")
         middlePageButton.setAttribute("style", "")
         middlePageButton.setIsEnabled(true)
-        nextPageButton.setAttribute("style", "")
-        nextPageButton.setIsEnabled(true)
+        currentPageText.text = (currentPage + 1).toString
+        jumpToPageButton2.setAttribute("style", "")
         lastPageButton.setAttribute("style", "")
         lastPageButton.setIsEnabled(true)
+        nextPageButton.setAttribute("style", "")
+        nextPageButton.setIsEnabled(true)
 
         if(currentPage == 0) {
             previousPageButton.setIsEnabled(false)
@@ -251,6 +258,7 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
             middlePageButton.hide()
             jumpToPageButton2.hide()
             lastPageButton.hide()
+            nextPageButton.setIsEnabled(false)
         } else if(pagesCount == 2) {
             jumpToPageButton1.hide()
             currentPageButton.hide()
@@ -262,6 +270,9 @@ abstract class TablePluginView(name: String, prefixApplier: Option[PrefixApplier
             jumpToPageButton2.hide()
         } else {
             middlePageButton.hide()
+            if(currentPage == 1) {
+                jumpToPageButton1.hide()
+            }
             if(currentPage == 0 || currentPage == pagesCount - 1) {
                 currentPageButton.hide()
                 jumpToPageButton2.hide()

@@ -41,6 +41,10 @@ trait EmbeddingDescriptionModelComponent
                 embeddingDescriptionRepository.setViewPlugin(id, visualPlugin)
             }
 
+            def setCustomization(id: String, customization: String): Option[entities.EmbeddingDescription] = {
+              embeddingDescriptionRepository.setCustomization(id, customization)
+            }
+
             def updateEvaluation(uriHash: String, newEvalId: String) {
                 embeddingDescriptionRepository.updateEvaluation(uriHash, newEvalId)
             }
