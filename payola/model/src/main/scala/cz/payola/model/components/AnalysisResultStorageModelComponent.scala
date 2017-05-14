@@ -71,13 +71,12 @@ trait AnalysisResultStorageModelComponent
                 val graphVerticesCount = graphSize.edges.find(_.uri.contains("value")).map(_.destination.toString().toLong)
 
                 val graph = rdfStorage.executeSPARQLQuery(sparqlQuery, constructUri(evaluationId), graphVerticesCount)
-                analysisResultRepository.updateTimestamp(evaluationId)
+
                 graph
             }
 
             def getGraphJena(evaluationId: String, format: String = "RDF/JSON"): String = {
                 val dataset = rdfStorage.executeSPARQLQueryJena("CONSTRUCT { ?s ?p ?o } WHERE {?s ?p ?o.}", constructUri(evaluationId))
-                analysisResultRepository.updateTimestamp(evaluationId)
 
                 val outputStream = new java.io.ByteArrayOutputStream()
                 if (format.toLowerCase == "json-ld"){
@@ -98,7 +97,6 @@ trait AnalysisResultStorageModelComponent
                 val graph = sparqlQueryList.map{ query =>
                     rdfStorage.executeSPARQLQuery(query, constructUri(evaluationId), graphVerticesCount)
                 }.reduce(_ + _)
-                analysisResultRepository.updateTimestamp(evaluationId)
                 graph
             }
 

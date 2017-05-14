@@ -11,7 +11,8 @@ import cz.payola.common.entities.settings.DefinedCustomization
 
 /**
  * Graphical representation of IdentifiedVertex object in the drawn graph.
- * @param vertexModel the vertex object from the model, that is visualized
+  *
+  * @param vertexModel the vertex object from the model, that is visualized
  * @param position of this graphical representation in drawing space
  * @param rdfType type of the vertex used to identify drawing settings in a customization
  * @param prefixApplier labels transformer
@@ -55,7 +56,8 @@ class VertexView(_vertexModel: Vertex, position: Point2D, private var _rdfType: 
 
     /**
      * Setter of contained informationView's data.
-     * @param data what should the informationView of this vertex display
+      *
+      * @param data what should the informationView of this vertex display
      */
     def setInformation(data: Option[Vertex]) {
         if (data.isDefined) {
@@ -65,7 +67,8 @@ class VertexView(_vertexModel: Vertex, position: Point2D, private var _rdfType: 
 
     /**
      * Getter of the text values of neighbouring literalVertices of this identifiedVertex.
-     * @return attributes of this identifiedVertex with types of relations (Edge between this identifiedVertex
+      *
+      * @return attributes of this identifiedVertex with types of relations (Edge between this identifiedVertex
      *         and the literalVertex)
      */
     def getLiteralVertices(): List[(String, Seq[String])] = {
@@ -76,13 +79,17 @@ class VertexView(_vertexModel: Vertex, position: Point2D, private var _rdfType: 
      * Appends a literalVertex (attribute of this identifiedVertex) identifying types of relations (Edges)
      */
     def addLiteralVertex(typeOfAttribute: Edge, valueOfAttribute: Seq[Vertex], identNeighborVertex: IdentifiedVertex) {
-        val values = valueOfAttribute.map(_.toString)
-        literalVertices ++= List(((typeOfAttribute.toString, values)))
+        val found : Option[(String, Seq[String])] = literalVertices.find{item: ((String, Seq[String])) => item._1==typeOfAttribute.toString}
+        if(!found.isDefined) {
+            val values = valueOfAttribute.map(_.toString)
+            literalVertices ++= List(((typeOfAttribute.toString, values)))
+        }
     }
 
     /**
      * Count of parent graph update cycles that this vertexView survived without being sent from server.
-     * @return count of updates from the last data refresh from the server
+      *
+      * @return count of updates from the last data refresh from the server
      */
     def getCurrentAge: Int = {
         age
@@ -185,7 +192,8 @@ class VertexView(_vertexModel: Vertex, position: Point2D, private var _rdfType: 
 
     /**
      * Compares this to another vertexView. Returns true if vertexModels.toString are equal.
-     * @param vertexView
+      *
+      * @param vertexView
      * @return
      */
     override def isEqual(vertexView: Any): Boolean = {

@@ -89,7 +89,6 @@ class PayolaGraph(vertices: immutable.Seq[Vertex], edges: immutable.Seq[Edge], _
     }
 
     def getModel: Model = {
-        println("modelstart")
         val model = ModelFactory.createDefaultModel()
 
         // A map of resources identified by their URIs.
@@ -118,7 +117,6 @@ class PayolaGraph(vertices: immutable.Seq[Vertex], edges: immutable.Seq[Edge], _
             }
             model.add(statement)
         }
-        println("modelend")
         model
     }
 
